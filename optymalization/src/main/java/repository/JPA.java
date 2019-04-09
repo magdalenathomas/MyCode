@@ -21,7 +21,7 @@ public class JPA {
 		private EntityManager em;
 
 		public JPA() {
-			em = Persistence.createEntityManagerFactory("library").createEntityManager();
+			em = Persistence.createEntityManagerFactory("magda").createEntityManager();
 		}
 
 		public void close() throws IOException {
