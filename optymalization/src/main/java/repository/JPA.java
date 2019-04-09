@@ -5,61 +5,74 @@ import java.io.IOException;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
+import repository.model.AuthorsEntity;
+import repository.model.AuthorsItem;
+import repository.model.BooksEntity;
+import repository.model.BooksItem;
+import repository.model.CompanyEntity;
+import repository.model.CompanyItem;
+import repository.model.OrdersEntity;
+import repository.model.OrdersItem;
+import repository.model.UsersEntity;
+import repository.model.UsersItem;
+
 public class JPA {
 		
 		private EntityManager em;
 
 		public JPA() {
-			em = Persistence.createEntityManagerFactory("magda").createEntityManager();
+			em = Persistence.createEntityManagerFactory("library").createEntityManager();
 		}
 
 		public void close() throws IOException {
 			em.close();
 		}
-		/*
-		public BooksItem[] getAll()  {
-			TypedQuery<BookEntity> q = em.createQuery("SELECT d FROM BookEntity d", BookEntity.class);
-			List<BookEntity> res = q.getResultList();
-			BooksItem[] all = new BooksItem[res.size()];
-			for (int i = 0; i < res.size(); i++) {
-				all[i] = res.get(i).getBooksItem();
-			}
-			return all;
-		}
 
-		public void save(BooksItem item) throws Exception {
-			BookEntity entity = new BookEntity();
-			entity.setTitle(item.getTitle());
-			entity.setAuthor(item.getAuthor());
-			entity.setReleaseDate(item.getReleaseDate());
-			entity.setQuantity(item.getQuantity());
 
+		public void save(AuthorsItem item) throws Exception {
+			AuthorsEntity entity = new AuthorsEntity();
+			entity.setAuthor_name(item.getAuthor_name());
+			entity.setAuthor_surname(item.getAuthor_surname());
 			em.getTransaction().begin();
 			em.persist(entity);
 			em.getTransaction().commit();
 		}
 		
-		public void delete(String title) {
+		public void save(CompanyItem item) throws Exception {
+			CompanyEntity entity = new CompanyEntity();
+			entity.setCity(item.getCity());
 			em.getTransaction().begin();
-			TypedQuery<BookEntity> q = em.createQuery("SELECT e FROM BookEntity e WHERE e.title = :title", BookEntity.class);	   
-			q.setParameter("title", title);
-			BookEntity entity = q.getSingleResult();
-			em.remove(entity);
-			System.out.println("Usunięto pozycje z biblioteki.");
+			em.persist(entity);
 			em.getTransaction().commit();
 		}
 		
-		public void seeOne(String title) {
+		public void save(UsersItem item) throws Exception {
+			UsersEntity entity = new UsersEntity();
+			entity.setUser_name(item.getUser_name());
+			entity.setUser_surname(item.getUser_surname());
+			entity.setUser_mejl(item.getUser_mejl());
+			entity.setUser_telephone(item.getUser_telephone());
 			em.getTransaction().begin();
-			TypedQuery<BookEntity> q = em.createQuery("SELECT e FROM BookEntity e WHERE e.title = :title", BookEntity.class);	   
-			q.setParameter("title", title);
-			BookEntity entity = q.getSingleResult();
-			System.out.println("Informacje na temat szukanej książki o tytule: " + entity.getTitle());
-			System.out.println("Autor: " + entity.getAuthor());
-			System.out.println("Data wydania: " + entity.getReleaseDate());
-			System.out.println("Ilość: " + entity.getReleaseDate());
+			em.persist(entity);
 			em.getTransaction().commit();
 		}
-	} */
+		
+		public void save(BooksItem item) throws Exception {
+			BooksEntity entity = new BooksEntity();
+			entity.setTitle(item.getTitle());
+			entity.setYear(item.getYear());
+			em.getTransaction().begin();
+			em.persist(entity);
+			em.getTransaction().commit();
+		}
 
+		public void save(OrdersItem item) throws Exception {
+			OrdersEntity entity = new OrdersEntity();
+			entity.setDate_hire(item.getDate_hire());
+			entity.setDate_return(item.getDate_return());
+			entity.setDebt(item.isDebt());
+			em.getTransaction().begin();
+			em.persist(entity);
+			em.getTransaction().commit();
+		}
 }
