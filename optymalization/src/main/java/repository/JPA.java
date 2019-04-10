@@ -31,6 +31,7 @@ public class JPA {
 
 		public void save(AuthorsItem item) throws Exception {
 			AuthorsEntity entity = new AuthorsEntity();
+			entity.setId_authors(item.getId_authors());
 			entity.setAuthor_name(item.getAuthor_name());
 			entity.setAuthor_surname(item.getAuthor_surname());
 			em.getTransaction().begin();
@@ -40,6 +41,7 @@ public class JPA {
 		
 		public void save(CompanyItem item) throws Exception {
 			CompanyEntity entity = new CompanyEntity();
+			entity.setId_company(item.getId_company());
 			entity.setCity(item.getCity());
 			em.getTransaction().begin();
 			em.persist(entity);
@@ -48,6 +50,7 @@ public class JPA {
 		
 		public void save(UsersItem item) throws Exception {
 			UsersEntity entity = new UsersEntity();
+			entity.setId_users(item.getId_users());
 			entity.setUser_name(item.getUser_name());
 			entity.setUser_surname(item.getUser_surname());
 			entity.setUser_mejl(item.getUser_mejl());
@@ -59,6 +62,7 @@ public class JPA {
 		
 		public void save(BooksItem item) throws Exception {
 			BooksEntity entity = new BooksEntity();
+			entity.setId_books(item.getId_books());
 			entity.setTitle(item.getTitle());
 			entity.setYear(item.getYear());
 			em.getTransaction().begin();
@@ -68,6 +72,7 @@ public class JPA {
 
 		public void save(OrdersItem item) throws Exception {
 			OrdersEntity entity = new OrdersEntity();
+			entity.setId_order(item.getId_order());
 			entity.setDate_hire(item.getDate_hire());
 			entity.setDate_return(item.getDate_return());
 			entity.setDebt(item.isDebt());

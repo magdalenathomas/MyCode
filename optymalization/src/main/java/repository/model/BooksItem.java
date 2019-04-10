@@ -4,13 +4,23 @@ public class BooksItem {
 
 	private String title;
 	private int year;
+	private int id_books;
 
 	public BooksItem() {
 	}
 
-	public BooksItem(String title, int year) {
+	public BooksItem(int id_books, String title, int year) {
+		this.id_books = id_books;
 		this.title = title;
 		this.year = year;
+	}
+
+	public int getId_books() {
+		return id_books;
+	}
+
+	public void setId_books(int id_books) {
+		this.id_books = id_books;
 	}
 
 	public String getTitle() {

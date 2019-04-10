@@ -6,13 +6,17 @@ version="2.0"
 >
 <persistence-unit name="magda" transaction-type="RESOURCE_LOCAL">
 
-<class>optymalization.repository.AuthorsEntity</class>
+<class>optymalization.repository.model.AuthorsEntity</class>
+<class>optymalization.repository.model.BooksEntity</class>
+<class>optymalization.repository.model.CompanyEntity</class>
+<class>optymalization.repository.model.OrdersEntity</class>
+<class>optymalization.repository.model.UsersEntity</class>
 
 <properties>
-  <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracelDriver" />
-  <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@dbserver.mif.pg.gda.pl:1521:/ORACLEMIF" />
-  <property name="javax.persistence.jdbc.user" value="******" />
-  <property name="javax.persistence.jdbc.password" value="******"/>
+  <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
+  <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@dbserver.mif.pg.gda.pl:1521:ORACLEMIF" />
+  <property name="javax.persistence.jdbc.user" value="****" />
+  <property name="javax.persistence.jdbc.password" value="****"/>
   <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
   <property name="hibernate.connection.characterEncoding" value="utf8" />
   <property name="hibernate.connection.useUnicode" value="true" />

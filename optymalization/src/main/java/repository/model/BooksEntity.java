@@ -2,27 +2,32 @@ package repository.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Books")
 public class BooksEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "int(11) comment 'indetyfikator książki'")
-	private Integer id;
+	private Integer id_books;
 	@Column(columnDefinition = "varchar2(50) comment 'tytuł książki'")
 	private String title;
 	@Column(columnDefinition = "varchar2(50) comment 'rok wydanie'")
 	private int year;
-	public Integer getId() {
-		return id;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_company")
+	CompanyEntity companyEntity;
+	
+
+	public Integer getId_books() {
+		return id_books;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId_books(Integer id_books) {
+		this.id_books = id_books;
 	}
 	public String getTitle() {
 		return title;
@@ -38,7 +43,7 @@ public class BooksEntity {
 	}
 
 	public BooksItem getBooksItem() {
-		return new BooksItem(title, year);
+		return new BooksItem(id_books, title, year);
 	}
 	
 }

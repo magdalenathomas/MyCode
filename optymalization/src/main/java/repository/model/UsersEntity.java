@@ -2,8 +2,6 @@ package repository.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,9 +9,8 @@ import javax.persistence.Table;
 @Table(name = "Users")
 public class UsersEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "int(11) comment 'indetyfikator użytkownika'")
-	private Integer id;
+	private Integer id_users;
 	@Column(columnDefinition = "varchar2(50) comment 'imię użytkownika'")
 	private String user_name;
 	@Column(columnDefinition = "varchar2(50) comment 'nazwisko użytkownika'")
@@ -23,11 +20,12 @@ public class UsersEntity {
 	@Column(columnDefinition = "int(11) comment 'numer telefonu użytkownika'")
 	private int user_telephone;
 	
-	public Integer getId() {
-		return id;
+
+	public Integer getId_users() {
+		return id_users;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId_users(Integer id_users) {
+		this.id_users = id_users;
 	}
 	public String getUser_name() {
 		return user_name;
@@ -55,6 +53,6 @@ public class UsersEntity {
 	}
 	
 	public UsersItem getUsersItem() {
-		return new UsersItem(user_name, user_surname, user_mejl, user_telephone);
+		return new UsersItem(id_users, user_name, user_surname, user_mejl, user_telephone);
 	}
 }

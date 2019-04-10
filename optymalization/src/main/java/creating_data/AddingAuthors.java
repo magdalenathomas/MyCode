@@ -13,10 +13,11 @@ public class AddingAuthors {
 		repo = new JPA();
 
 		DataFactory df = new DataFactory();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 1; i < 100; i++) {
+			int id_authors = i;
 			String author_name = df.getFirstName();
 			String author_surname = df.getLastName();
-			AuthorsItem author = new AuthorsItem(author_name, author_surname);
+			AuthorsItem author = new AuthorsItem(id_authors, author_name, author_surname);
 			repo.save(author);
 		}
 	}

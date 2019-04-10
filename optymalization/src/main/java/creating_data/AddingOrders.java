@@ -17,6 +17,7 @@ public class AddingOrders {
 		DataFactory df = new DataFactory();
 		boolean debt = false;
 		for (int i = 0; i < 100; i++) {
+			int id_order = i;
 			Date minDate = df.getDate(2015, 1, 1);
 			Date maxDate = df.getDate(2016, 12, 31);
 			Date date_hire = df.getDateBetween(minDate, maxDate);
@@ -26,7 +27,7 @@ public class AddingOrders {
 			 * (date_return.getDay() - date_hire.getDay()); if (wynik > 30) { debt = true; }
 			 * else { debt = false; } }
 			 */
-			OrdersItem order = new OrdersItem(date_hire, date_return, debt);
+			OrdersItem order = new OrdersItem(id_order, date_hire, date_return, debt);
 			repo.save(order);
 		}
 	}

@@ -7,14 +7,24 @@ public class OrdersItem {
 	private Date date_hire;
 	private Date date_return;
 	private boolean debt;
+	private int id_order;
 	
 	public OrdersItem() {
 	}
 
-	public OrdersItem(Date date_hire, Date date_return, boolean debt) {
+	public OrdersItem(int id_order, Date date_hire, Date date_return, boolean debt) {
+		this.id_order = id_order;
 		this.date_hire = date_hire;
 		this.date_return = date_return;
 		this.debt = debt;
+	}
+
+	public int getId_order() {
+		return id_order;
+	}
+
+	public void setId_order(int id_order) {
+		this.id_order = id_order;
 	}
 
 	public Date getDate_hire() {

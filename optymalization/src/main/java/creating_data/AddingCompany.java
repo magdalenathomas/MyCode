@@ -14,8 +14,9 @@ public class AddingCompany {
 
 		DataFactory df = new DataFactory();
 		for (int i = 0; i < 50; i++) {
+			int id_company = i;
 			String city = df.getCity();
-			CompanyItem company = new CompanyItem(city);
+			CompanyItem company = new CompanyItem(id_company, city);
 			repo.save(company);
 		}
 	}

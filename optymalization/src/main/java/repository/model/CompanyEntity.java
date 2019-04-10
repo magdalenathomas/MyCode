@@ -1,28 +1,31 @@
 package repository.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Company")
 public class CompanyEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "Company_id_company")
+	private List<BooksEntity> id_books;
 	@Column(columnDefinition = "int(11) comment 'indetyfikator wydawnictwa'")
-	private Integer id;
+	private Integer id_company;
 	@Column(columnDefinition = "varchar2(50) comment 'miejscowosc'")
 	private String city;
 
-	public Integer getId() {
-		return id;
+	public Integer getId_company() {
+		return id_company;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId_company(Integer id_company) {
+		this.id_company = id_company;
 	}
 
 	public String getCity() {
@@ -34,6 +37,6 @@ public class CompanyEntity {
 	}
 
 	public CompanyItem getCompanyItem() {
-		return new CompanyItem(city);
+		return new CompanyItem(id_company, city);
 	}
 }
