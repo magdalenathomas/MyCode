@@ -1,27 +1,35 @@
 package repository.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Books")
 public class BooksEntity {
 	@Id
-	@Column(columnDefinition = "int(11) comment 'indetyfikator książki'")
+	@Column
 	private Integer id_books;
-	@Column(columnDefinition = "varchar2(50) comment 'tytuł książki'")
+	@Column
 	private String title;
-	@Column(columnDefinition = "varchar2(50) comment 'rok wydanie'")
+	@Column
 	private int year;
+
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_company")
+    @JoinColumn(name = "Company_Id_Company")
 	CompanyEntity companyEntity;
-	
+
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(
+			name = "Books_Authors",
+			joinColumns = { @JoinColumn(name = "books_id_books") },
+			inverseJoinColumns = { @JoinColumn(name = "authors_id_authors") }
+	)
+	private Set<AuthorsEntity> authorsEntity = new HashSet<AuthorsEntity>();
+
+	@ManyToMany(mappedBy = "booksEntity", cascade =
+			{CascadeType.PERSIST, CascadeType.MERGE})
+	Set<OrdersEntity> ordersEntity = new HashSet<OrdersEntity>();
 
 	public Integer getId_books() {
 		return id_books;
@@ -43,7 +51,30 @@ public class BooksEntity {
 	}
 
 	public BooksItem getBooksItem() {
-		return new BooksItem(id_books, title, year);
+		return new BooksItem(id_books, title, year, companyEntity, authorsEntity);
 	}
-	
+
+	public CompanyEntity getCompanyEntity() {
+		return companyEntity;
+	}
+
+	public void setCompanyEntity(CompanyEntity companyEntity) {
+		this.companyEntity = companyEntity;
+	}
+
+	public Set<AuthorsEntity> getAuthorsEntity() {
+		return authorsEntity;
+	}
+
+	public void setAuthorsEntity(Set<AuthorsEntity> authorsEntity) {
+		this.authorsEntity = authorsEntity;
+	}
+
+	public Set<OrdersEntity> getOrdersEntity() {
+		return ordersEntity;
+	}
+
+	public void setOrdersEntity(Set<OrdersEntity> ordersEntity) {
+		this.ordersEntity = ordersEntity;
+	}
 }

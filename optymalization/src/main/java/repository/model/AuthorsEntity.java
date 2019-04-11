@@ -1,22 +1,25 @@
 package repository.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Authors")
 public class AuthorsEntity {
 	@Id
-	@Column(columnDefinition = "int(11) comment 'indetyfikator autora'")
-	private Integer id_authors;
-	@Column(columnDefinition = "varchar2(50) comment 'imię autora'")
+	@Column
+	private int id_authors;
+	@Column
 	private String author_name;
-	@Column(columnDefinition = "varchar2(50) comment 'nazwisko autora'")
+	@Column
 	private String author_surname;
+	
+	@ManyToMany(mappedBy = "authorsEntity", cascade =
+			{CascadeType.PERSIST, CascadeType.MERGE})
+	Set<BooksEntity> booksEntity = new HashSet<BooksEntity>();
 
-	public Integer getId_authors() {
+	public int getId_authors() {
 		return id_authors;
 	}
 
@@ -42,5 +45,13 @@ public class AuthorsEntity {
 
 	public AuthorsItem getAuthorsItem() {
 		return new AuthorsItem(id_authors, author_name, author_surname);
+	}
+
+	public Set<BooksEntity> getBooksEntity() {
+		return booksEntity;
+	}
+
+	public void setBooksEntity(Set<BooksEntity> booksEntity) {
+		this.booksEntity = booksEntity;
 	}
 }

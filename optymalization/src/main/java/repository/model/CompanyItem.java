@@ -28,5 +28,4 @@ public class CompanyItem {
 	public void setCity(String city) {
 		this.city = city;
 	}
-
 }

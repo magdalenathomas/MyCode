@@ -13,7 +13,7 @@ public class AddingCompany {
 		repo = new JPA();
 
 		DataFactory df = new DataFactory();
-		for (int i = 0; i < 50; i++) {
+		for (int i = 1; i < 10; i++) {
 			int id_company = i;
 			String city = df.getCity();
 			CompanyItem company = new CompanyItem(id_company, city);

@@ -1,25 +1,25 @@
 package repository.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Users")
 public class UsersEntity {
 	@Id
-	@Column(columnDefinition = "int(11) comment 'indetyfikator użytkownika'")
+	@Column
 	private Integer id_users;
-	@Column(columnDefinition = "varchar2(50) comment 'imię użytkownika'")
+	@Column
 	private String user_name;
-	@Column(columnDefinition = "varchar2(50) comment 'nazwisko użytkownika'")
+	@Column
 	private String user_surname;
-	@Column(columnDefinition = "varchar2(50) comment 'mejl użytkownika'")
+	@Column
 	private String user_mejl;
-	@Column(columnDefinition = "int(11) comment 'numer telefonu użytkownika'")
+	@Column
 	private int user_telephone;
-	
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usersEntity")
+	private List<UsersEntity> usersEntity;
 
 	public Integer getId_users() {
 		return id_users;
@@ -52,7 +52,15 @@ public class UsersEntity {
 		this.user_telephone = user_telephone;
 	}
 	
-	public UsersItem getUsersItem() {
+	/*public UsersItem getUsersItem() {
 		return new UsersItem(id_users, user_name, user_surname, user_mejl, user_telephone);
+	}*/
+
+	public List<UsersEntity> getUsersEntity() {
+		return usersEntity;
+	}
+
+	public void setUsersEntity(List<UsersEntity> usersEntity) {
+		this.usersEntity = usersEntity;
 	}
 }

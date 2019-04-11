@@ -13,12 +13,13 @@ import javax.persistence.Table;
 @Table(name = "Company")
 public class CompanyEntity {
 	@Id
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "Company_id_company")
-	private List<BooksEntity> id_books;
-	@Column(columnDefinition = "int(11) comment 'indetyfikator wydawnictwa'")
+	@Column
 	private Integer id_company;
-	@Column(columnDefinition = "varchar2(50) comment 'miejscowosc'")
+	@Column
 	private String city;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "companyEntity")
+	private List<BooksEntity> id_books;
 
 	public Integer getId_company() {
 		return id_company;

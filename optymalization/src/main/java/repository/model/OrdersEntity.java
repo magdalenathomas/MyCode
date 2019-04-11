@@ -1,28 +1,36 @@
 package repository.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Orders")
 public class OrdersEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(columnDefinition = "int(11) comment 'indetyfikator zamówienia'")
+	@Column
 	private Integer id_order;
-	@Column(columnDefinition = "date comment 'data wypożyczenia'")
+	@Column
 	private Date date_hire;
-	@Column(columnDefinition = "date comment 'data zwrotu'")
+	@Column
 	private Date date_return;
-	@Column(columnDefinition = "char(1) comment 'zadłużenie'")
+	@Column
 	private boolean debt;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "Users_Id_Users")
+	UsersEntity usersEntity;
+
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(
+			name = "Orders_Books",
+			joinColumns = { @JoinColumn(name = "orders_id_orders") },
+			inverseJoinColumns = { @JoinColumn(name = "books_id_books") }
+	)
+	private Set<BooksEntity> booksEntity = new HashSet<BooksEntity>();
 
 	public Integer getId_order() {
 		return id_order;
@@ -55,8 +63,24 @@ public class OrdersEntity {
 	public void setDebt(boolean debt) {
 		this.debt = debt;
 	}
-	
-	public OrdersItem getOrdersItem() {
-		return new OrdersItem(id_order, date_hire, date_return, debt);
+
+	public UsersEntity getUsersEntity() {
+		return usersEntity;
 	}
+
+	public void setUsersEntity(UsersEntity usersEntity) {
+		this.usersEntity = usersEntity;
+	}
+
+	public Set<BooksEntity> getBooksEntity() {
+		return booksEntity;
+	}
+
+	public void setBooksEntity(Set<BooksEntity> booksEntity) {
+		this.booksEntity = booksEntity;
+	}
+
+/*	public OrdersItem getOrdersItem() {
+		return new OrdersItem(id_order, date_hire, date_return, debt);
+	}*/
 }
