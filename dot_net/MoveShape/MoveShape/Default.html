@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR MoveShape Demo</title>
+    <style>
+        #shape {
+            width: 50px;
+            height: 50px;
+            background-color: #ffd800;
+        }
+    </style>
+</head>
+<body>
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+    <script src="Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.2.2.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+        $(function () {
+            var moveShapeHub = $.connection.moveShapeHub,
+                $shape = $("#shape"),
+                messageFrequency = 10, //wysyła maksymalnie 10 wiadomości na sekundę
+                updateRate = 1000 / messageFrequency, //co ile jest odświeżane
+                shapeModel = {
+                    left: 0,
+                    top: 0
+                },
+                moved = false;
+            moveShapeHub.client.updateShape = function (model) {
+                shapeModel = model;
+                $shape.animate(shapeModel, { duration: updateRate, queue: false });
+                //przeciągamy model do nowej lokalizacji,  
+                //czas trwania ruchu (od starej lokalizacji do nowej to updateRate)
+                //gueue:false bo każda zmiana lokalizacji to nowa animacja
+            };
+            $.connection.hub.start().done(function () {
+                $shape.draggable({
+                    drag: function () {
+                        shapeModel = $shape.offset();
+                        moved = true;
+                    }
+                });
+                setInterval(updateServerModel, updateRate); //update po stronie klienta
+            });
+            function updateServerModel() {
+                if (moved) {
+                    moveShapeHub.server.updateModel(shapeModel);
+                    moved = false;
+                }
+              //jak jest nowy ruch, to serwer robi update modelu i zmienia moved na false
+            }
+        });
+    </script>
+
+    <div id="shape" />
+</body>
+</html>

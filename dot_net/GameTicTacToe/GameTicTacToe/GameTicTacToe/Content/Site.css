@@ -1,0 +1,27 @@
+﻿span.box {
+    display: block;
+    float: left;
+    border: 1px solid black;
+    height: 70px;
+    width: 70px;
+    margin: 5px;
+}
+
+div.information {
+    clear: both;
+}
+
+span.mark1 {
+    background: url('/Content/X.png') center center no-repeat;
+}
+
+span.mark2 {
+    background: url('/Content/O.png') center center no-repeat;
+}
+span.marked {
+    background-size: 70px 70px;
+}
+
+div#game {
+    width: 320px;
+}
