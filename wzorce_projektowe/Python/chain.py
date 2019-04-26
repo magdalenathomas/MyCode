@@ -1,104 +1,83 @@
 import time
 import random
+from abc import ABCMeta, abstractmethod
 
-class AbstractAlgorithm:
+TIMEOUT = 0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005
 
-    def setAlgorithm(self, alg):
-        self.alg = alg
 
-    def forwardRequest(self, wektor):
+class AbstractAlgorithm(object):
+
+    __metaclass__ = ABCMeta
+
+    def __init__(self, alg=None):
+        self._alg = alg
+
+    @abstractmethod
+    def forward_request(self, vector):
         pass
 
 
-class Stoper:
-
-    def start(self):
-        self.start = time.ctime()
-        return self.start
-
-    def stop(self):
-        self.stop = time.ctime()
-        return self.stop
-
-    def wynik(self):
-        self.wynik = self.start() - self.stop()
-        print self.wynik
-
-
 class CubicAlgorithm(AbstractAlgorithm):
+    def forward_request(self, vector):
+        start = time.time()
+        max_so_far = 0
+        for i in range(len(vector)):
+            for j in range(i, len(vector)):
+                acc = 0
+                for k in range(i, j+1):
+                    acc += vector[k]
+                    max_so_far = max(max_so_far, acc)
 
-   def forwardRequest(self, wektor):
-    stoper.start()
-    maxsofar = 0
-    i = wektor[0]
-    j = len(wektor)-1
-    n = len(wektor)
-    k = 0
+        time_elapsed = time.time() - start
 
-    for i in range(0, n-1):
-        for j in range(0, n-1):
-            sum = 0
-            for k in range(0, j):
-                sum += wektor[k]
-                maxsofar = max(maxsofar, sum)
-    stoper.stop()
-
-    if stoper.wynik() <= 0.010:
-        print "Algorytm sześcienny: ", maxsofar
-    else:
-        alg.forwardRequest(wektor)
+        if time_elapsed >= TIMEOUT:
+            print("Timeout exceeded using cubic algorithm ({} seconds)".format(time_elapsed))
+            self._alg.forward_request(vector)
+        else:
+            print("Cubic algorithm: {} in time: {}".format(max_so_far, time_elapsed))
 
 
 class SquareAlgorithm(AbstractAlgorithm):
+    def forward_request(self, vector):
+        start = time.time()
+        max_so_far = 0
+        for i in range(len(vector)):
+            acc = 0
+            for j in range(i, len(vector)):
+                acc += vector[j]
+                max_so_far = max(max_so_far, acc)
 
-    def forwardRequest(self, wektor):
-        stoper.start()
-        maxsofar = 0
-        i = wektor[0]
-        j = len(wektor) - 1
-        n = len(wektor)
-        k = 0
+        time_elapsed = time.time() - start
 
-        for i in range(0, n - 1):
-            sum = 0
-            for j in range(0, n - 1):
-                    sum += wektor[k]
-                    maxsofar = max(maxsofar, sum)
-        stoper.stop()
-
-    if stoper.wynik() <= 0.05:
-        print "Algorytm kwadratowy: ", maxsofar
-    else:
-        alg.forwardRequest(wektor)
+        if time_elapsed >= TIMEOUT:
+            print("Timeout exceeded using square algorithm ({} seconds)".format(time_elapsed))
+            self._alg.forward_request(vector)
+        else:
+            print("Square algorithm: {} in time: {} \n".format(max_so_far, time_elapsed))
 
 
 class LinearAlgorithm(AbstractAlgorithm):
+    def forward_request(self, vector):
+        start = time.time()
 
-    def forwardRequest(self, wektor):
-        stoper.start()
-        maxsofar = 0
-        maxhere = 0
-        i = wektor[0]
-        n = len(wektor)
+        max_so_far = 0
+        max_here = 0
 
-        for i in range(0, n - 1):
-            maxhere = max(maxhere + wektor[i], 0)
-            maxsofar = max(maxsofar, maxhere)
-        stoper.stop()
-        print "Algorytm liniowy: ", maxsofar
+        for i in range(len(vector)):
+            max_here = max(max_here + vector[i], 0)
+            max_so_far = max(max_so_far, max_here)
+
+        time_elapsed = time.time() - start
+        print("Linear algorithm result: {} in time: {} \n".format(max_so_far, time_elapsed))
 
 
-stoper = Stoper()
+if __name__ == '__main__':
+    linear = LinearAlgorithm()
+    square = SquareAlgorithm(linear)
+    cubic = CubicAlgorithm(square)
 
-wektor = []
-for i in range(1, 20):
-    x = random.randint(0, 10)
-    wektor.append(x)
+    vector = random.sample(range(100), 20)
+    cubic.forward_request(vector)
 
-szescienny = CubicAlgorithm()
-kwadratowy = SquareAlgorithm()
-linowy = LinearAlgorithm()
-
-szescienny.setAlgorithm(kwadratowy)
-kwadratowy.setAlgorithm(linowy)
-szescienny.forwardRequest(wektor)
+    vector = [1, 2, 3, -3, -5, 3, 4]
+    cubic.forward_request(vector)
