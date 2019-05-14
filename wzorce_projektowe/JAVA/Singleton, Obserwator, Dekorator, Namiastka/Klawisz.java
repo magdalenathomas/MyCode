@@ -30,5 +30,10 @@ public class Klawisz implements KlawiszAbstrakcyjny{
 	public String getKey() {
 		return key;
 	}
+
+	public void update(KlawiszAbstrakcyjny key_pressed) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

@@ -11,4 +11,6 @@ public interface KlawiszAbstrakcyjny {
 	public void uaktualnij(KlawiszAbstrakcyjny key_pressed);
 	
 	public String getKey();
+	
+	public void update(KlawiszAbstrakcyjny key_pressed);
 }

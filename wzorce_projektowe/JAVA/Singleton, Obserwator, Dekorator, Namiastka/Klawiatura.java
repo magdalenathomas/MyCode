@@ -30,7 +30,7 @@ public class Klawiatura {
 		System.out.println("Usunięto klawisz: " + klawisz.getKey());
 	}
 	
-	/*public void sprawdzanie(KlawiszAbstrakcyjny klawisz) {
+	public void sprawdzanie(KlawiszAbstrakcyjny klawisz) {
 		key_pressed = klawisz.getKey();
 		
 		for (int i=0; i<klawiatura.size(); i++) {
@@ -46,9 +46,9 @@ public class Klawiatura {
 			}
 			
 		}
-	}*/
+	}
 	
-	public void sprawdzanie(String klucz) {
+	/*public void sprawdzanie(String klucz) {
 		for (int i=0; i<klawiatura.size(); i++) {
 			KlawiszAbstrakcyjny k = klawiatura.get(i);
 			String key = k.getKey();
@@ -56,16 +56,17 @@ public class Klawiatura {
 				powiadom(k);
 				break;
 			}
-			/*if (!(klucz.equals(key))) {
+			if (!(klucz.equals(key))) {
 				System.out.println("Brak przycisku");
 				return;
-			}*/
+			}
 			
 		}
-	}
+	}*/
 	
 	public void powiadom(KlawiszAbstrakcyjny klawisz) {
-		klawisz.uaktualnij(klawisz);
+		klawisz.update(klawisz);
+		//klawisz.uaktualnij(klawisz);
 		odrejestrowywanie(klawisz);;
 	}
 }
