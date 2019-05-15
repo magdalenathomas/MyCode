@@ -2,10 +2,12 @@ package repository;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
+import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import repository.model.AuthorsEntity;
 import repository.model.AuthorsItem;
@@ -20,7 +22,7 @@ import repository.model.UsersItem;
 
 public class JPA {
 
-	private EntityManager em;
+	private static EntityManager em;
 
 	public JPA() {
 		em = Persistence.createEntityManagerFactory("magda").createEntityManager();
@@ -105,5 +107,54 @@ public class JPA {
 		em.persist(entity);
 		em.getTransaction().commit();
 	}
-
+	
+	public static BooksItem[] getAll()  {
+		TypedQuery<BooksEntity> q = em.createQuery("SELECT d FROM BooksEntity d", BooksEntity.class);
+		List<BooksEntity> res = q.getResultList();
+		BooksItem[] all = new BooksItem[res.size()];
+		for (int i = 0; i < res.size(); i++) {
+			all[i] = res.get(i).getBooksItem();
+		}
+		return all;
+	}
+	
+	public void change(String city) {
+		TypedQuery<CompanyEntity> q = em.createQuery("SELECT d FROM CompanyEntity d WHERE d.city=:city", CompanyEntity.class);
+		q.setParameter("city", city);
+		CompanyEntity entity = q.getSingleResult();
+		entity.setCity("Manchester");
+		em.getTransaction().begin();
+		em.persist(entity);
+		em.getTransaction().commit();
+	}
+	
+	public static BooksItem[] findAll(int id_company)  {
+		TypedQuery<BooksEntity> q = em.createQuery("SELECT d FROM BooksEntity d WHERE d.companyEntity=:id_company", BooksEntity.class);
+		List<BooksEntity> res = q.getResultList();
+		BooksItem[] all = new BooksItem[res.size()];
+		for (int i = 0; i < res.size(); i++) {
+			all[i] = res.get(i).getBooksItem();
+		}
+		return all;
+	}
+	
+	public void delete(int year) {
+		em.getTransaction().begin();
+		TypedQuery<BooksEntity> q = em.createQuery("SELECT e FROM BooksEntity e WHERE e.year =: year", BooksEntity.class);	   
+		q.setParameter("year", year);
+		List<BooksEntity> res = q.getResultList();
+		em.remove(res);
+		System.out.println("Usunięto pozycje z biblioteki.");
+		em.getTransaction().commit();
+	}
+	
+	public static BooksItem[] find()  {
+		TypedQuery<BooksEntity> q = em.createQuery("SELECT d FROM BooksEntity d WHERE d.year=:year", BooksEntity.class);
+		List<BooksEntity> res = q.getResultList();
+		BooksItem[] all = new BooksItem[res.size()];
+		for (int i = 0; i < res.size(); i++) {
+			all[i] = res.get(i).getBooksItem();
+		}
+		return all;
+	}
 }

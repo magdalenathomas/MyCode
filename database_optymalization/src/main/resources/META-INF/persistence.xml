@@ -15,8 +15,8 @@ version="2.0"
 <properties>
   <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.driver.OracleDriver" />
   <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@dbserver.mif.pg.gda.pl:1521:ORACLEMIF" />
-  <property name="javax.persistence.jdbc.user" value="*****" />
-  <property name="javax.persistence.jdbc.password" value="******"/>
+  <property name="javax.persistence.jdbc.user" value="MAGTHOMA_S" />
+  <property name="javax.persistence.jdbc.password" value="****"/>
   <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle8iDialect" />
   <property name="hibernate.connection.characterEncoding" value="utf8" />
   <property name="hibernate.connection.useUnicode" value="true" />

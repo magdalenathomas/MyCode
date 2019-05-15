@@ -12,7 +12,7 @@ public class AddingUsers {
 		repo = new JPA();
 
 		DataFactory df = new DataFactory();
-		for (int i = 1; i < 300; i++) {
+		for (int i = 1; i < 500; i++) {
 			int id_users = i;
 			String user_name = df.getFirstName();
 			String user_surname = df.getLastName();

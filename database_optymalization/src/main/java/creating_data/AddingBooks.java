@@ -21,7 +21,7 @@ public class AddingBooks {
 		DataFactory df = new DataFactory();
 		Collection<CompanyEntity> allCompanies = repo.findAllCompanies();
 		Collection<AuthorsEntity> allAuthors = repo.findAllAuthors();
-		for (int i = 1; i < 100; i++) {
+		for (int i = 1; i < 1000; i++) {
 			int id_books = i;
 			String title = df.getRandomWord();
 			CompanyEntity item = (CompanyEntity) df.getItem(new ArrayList(allCompanies));
