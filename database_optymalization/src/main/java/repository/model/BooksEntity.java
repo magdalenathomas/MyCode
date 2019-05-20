@@ -25,7 +25,7 @@ public class BooksEntity {
 			joinColumns = { @JoinColumn(name = "books_id_books") },
 			inverseJoinColumns = { @JoinColumn(name = "authors_id_authors") }
 	)
-	private Set<AuthorsEntity> authorsEntity = new HashSet<AuthorsEntity>();
+	Set<AuthorsEntity> authorsEntity = new HashSet<AuthorsEntity>();
 
 	@ManyToMany(mappedBy = "booksEntity", cascade =
 			{CascadeType.PERSIST, CascadeType.MERGE})

@@ -9,6 +9,6 @@ public class ChangeOne {
 		JPA repo = null;
 		repo = new JPA();
 		
-		repo.change("Warsaw");
+	//	repo.change("Warsaw");
 	}
 }

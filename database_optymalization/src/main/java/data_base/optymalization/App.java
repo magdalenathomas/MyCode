@@ -1,7 +1,5 @@
 package data_base.optymalization;
 
-import users.Admin;
-
 public class App {
 
 	public static void main(String[] args) throws Exception {
@@ -19,7 +17,7 @@ public class App {
 		//new Admin().start();
 		//new User("ja").start();
 		//new Moderator().start();
-		new Admin().start();
+	//	new Admin().start();
 	}
 }
 

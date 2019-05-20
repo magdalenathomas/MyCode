@@ -1,7 +1,7 @@
 package creating_data;
 
 import org.fluttercode.datafactory.impl.DataFactory;
-
+import repository.CompanyRepository;
 import repository.JPA;
 import repository.model.CompanyItem;
 
@@ -11,13 +11,14 @@ public class AddingCompany {
 
 		JPA repo = null;
 		repo = new JPA();
+		CompanyRepository companyRepository = new CompanyRepository();
 
 		DataFactory df = new DataFactory();
-		for (int i = 1; i < 10; i++) {
+		for (int i = 1; i < 300; i++) {
 			int id_company = i;
 			String city = df.getCity();
 			CompanyItem company = new CompanyItem(id_company, city);
-			repo.save(company);
+			companyRepository.save(company);
 		}
 	}
 }

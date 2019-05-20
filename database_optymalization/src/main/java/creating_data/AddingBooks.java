@@ -1,27 +1,29 @@
 package creating_data;
 
+import org.fluttercode.datafactory.impl.DataFactory;
+import repository.AuthorRepository;
+import repository.BookRepository;
+import repository.CompanyRepository;
+import repository.model.AuthorsEntity;
+import repository.model.BooksItem;
+import repository.model.CompanyEntity;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.fluttercode.datafactory.impl.DataFactory;
-
-import repository.JPA;
-import repository.model.AuthorsEntity;
-import repository.model.BooksItem;
-import repository.model.CompanyEntity;
-
 public class AddingBooks {
 	public static void addingBooks() throws Exception {
 
-		JPA repo = null;
-		repo = new JPA();
+		BookRepository bookRepository = new BookRepository();
+		CompanyRepository companyRepository = new CompanyRepository();
+		AuthorRepository authorRepository = new AuthorRepository();
 
 		DataFactory df = new DataFactory();
-		Collection<CompanyEntity> allCompanies = repo.findAllCompanies();
-		Collection<AuthorsEntity> allAuthors = repo.findAllAuthors();
-		for (int i = 1; i < 1000; i++) {
+		Collection<CompanyEntity> allCompanies = companyRepository.findAll();
+		Collection<AuthorsEntity> allAuthors = authorRepository.findAll();
+		for (int i = 1; i < 10000; i++) {
 			int id_books = i;
 			String title = df.getRandomWord();
 			CompanyEntity item = (CompanyEntity) df.getItem(new ArrayList(allCompanies));
@@ -39,7 +41,7 @@ public class AddingBooks {
 
 			int year = df.getNumberBetween(1960, 2019);
 			BooksItem book = new BooksItem(id_books ,title, year, item, authorsEntityList);
-			repo.save(book);
+			bookRepository.save(book);
 
 		}
 	}

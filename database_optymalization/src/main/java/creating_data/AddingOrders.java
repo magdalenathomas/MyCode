@@ -1,17 +1,13 @@
 package creating_data;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.fluttercode.datafactory.impl.DataFactory;
-
+import repository.BookRepository;
 import repository.JPA;
 import repository.model.BooksEntity;
 import repository.model.OrdersItem;
 import repository.model.UsersEntity;
+
+import java.util.*;
 
 public class AddingOrders {
 
@@ -19,9 +15,11 @@ public class AddingOrders {
 
 		JPA repo = null;
 		repo = new JPA();
+		BookRepository bookRepository = new BookRepository();
 
 		DataFactory df = new DataFactory();
-		Collection<BooksEntity> allBooks = repo.findAllBooks();
+
+		Collection<BooksEntity> allBooks = bookRepository.findAll();
 		Collection<UsersEntity> allUsers = repo.findAllUsers();
 
 		boolean debt = false;
