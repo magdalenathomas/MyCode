@@ -9,7 +9,7 @@
 # pip install matplotlib
 #
 # Uruchamianie skryptu:
-# python dane.py
+#python dane.py
 # albo wymuszając Pythona 3 gdy nie jest on domyślny:
 # py -3 dane.py
 #
@@ -40,34 +40,51 @@
 
 
 import csv
-import numpy as np
+
+# from matplotlib.backends.backend_pdf import PdfPages
+# pp = PdfPages('multipage.pdf')
+
 import matplotlib.pyplot as plt
-  
+import numpy as np
+
 #######################
 # A. Wczytanie danych #
 #######################
-  
+from matplotlib.backends.backend_pdf import PdfPages
+
 przeplyw = []        # Przepływ wody przez węzeł
 temp_in = []         # Temperatura wody na wejściu do węzła
 temp_out = []        # Temperatura wody na wyjściu z węzła 
 roznica_temp = []    # Różnica temperatur, wynikająca z oddanej energii w węźle
 moc = []             # Moc oddana w węźle
 
+
 plik = open('dane.csv', 'rt')
 dane = csv.reader(plik, delimiter=',')
 next(dane)                # Opuszczamy pierwszy wiersz
 for obserwacja in dane:   # Iterujemy po poszczególnych obserwacjach.
-    przeplyw.append(float(obserwacja[6]))
-    temp_in.append(float(obserwacja[7]))
-    temp_out.append(float(obserwacja[8]))
-    roznica_temp.append(float(obserwacja[9]))
-    moc.append(float(obserwacja[12]))
+     przeplyw.append(float(obserwacja[6]))
+     temp_in.append(float(obserwacja[7]))
+     temp_out.append(float(obserwacja[8]))
+     roznica_temp.append(float(obserwacja[9]))
+     moc.append(float(obserwacja[12]))
 plik.close()
+
 
 ### ZADANIE (0.5p.) ###
 # Dane w listach są ułożone od najnowszych do najstarszych.
-# Odwrócić dane na listach tak, żeby były ułożone chronologicznie.    
+# Odwrócić dane na listach tak, żeby były ułożone chronologicznie.
 ### KONIEC ###
+
+oprzeplyw = reversed(przeplyw)
+otemp_in = reversed(temp_in)
+otemp_out = reversed(temp_out)
+oroznica_temp = reversed(roznica_temp)
+omoc = reversed(moc)
+
+# for i in oprzeplyw:
+#     print(i)
+
         
 # Tworzymy słownik: kluczem jest nazwa zmiennej a wartością - zmienna
 zmienne = {"temp_in":temp_in, "temp_out":temp_out, "roznica_temp":roznica_temp, "przeplyw":przeplyw, "moc":moc}
@@ -81,7 +98,7 @@ zmienne = {"temp_in":temp_in, "temp_out":temp_out, "roznica_temp":roznica_temp, 
 for nazwa,zmienna in zmienne.items():
     print()
     print("Zmienna:",nazwa)
-    print("MIN:", min(zmienna))   
+    print("MIN:", min(zmienna))
     print("MAX:", max(zmienna))
     print("ŚREDNIA:", np.mean(zmienna))
     print("MEDIANA:", np.median(zmienna))
@@ -101,9 +118,9 @@ for nazwa,zmienna in zmienne.items():
     plt.ylabel('Liczba obserwacji')
     plt.show()
 
-    
+
 ############################################
-# C. Analiza anomalii i czyszczenie danych # 
+# C. Analiza anomalii i czyszczenie danych #
 ############################################
 
 # Zidentyfikowaliśmy problem - "dziwne", znacząco za duże niektóre wartości dla zmiennych:
@@ -115,44 +132,47 @@ print("CZYSZCZENIE DANYCH")
 for nazwa,zmienna in zmienne_do_naprawienia.items():
     for index,wartosc in enumerate(zmienna): # Iterujemy po wszystkich obserwacjach
         # Zakładamy (na podstawie analizy danych), że anomalia to wartość powyżej 10000
-        if (wartosc > 10000): 
+        if (wartosc > 10000):
             print("Dla zmiennej {} pod indeksem {} znaleziono anomalię o wartości {}".format(nazwa, index, wartosc))
             # Wstawiamy medianę:
             mediana = np.median(zmienna)
             print("Naprawiam. Stara wartość: {}, nowa wartość: {}".format(zmienna[index], mediana))
             zmienna[index] = mediana
-        
+
 # Statystyki dla naprawionych zmiennych
 for nazwa,zmienna in zmienne.items():
     print()
     print("Zmienna (naprawiona):",nazwa)
-    print("MIN:", min(zmienna))   
+    print("MIN:", min(zmienna))
     print("MAX:", max(zmienna))
     print("ŚREDNIA:", np.mean(zmienna))
     print("MEDIANA:", np.median(zmienna))
     print("ZAKRES:", np.ptp(zmienna))
     print("ODCHYLENIE STANDARDOWE:", np.std(zmienna))
     print("WARIANCJA:", np.var(zmienna))
-    print("PERCENTYL 90%:", np.percentile(zmienna,90)) 
+    print("PERCENTYL 90%:", np.percentile(zmienna,90))
     print("HISTOGRAM:", np.histogram(zmienna))
 
-    plt.hist(zmienna, 100)
-    plt.title('Histogram dla: ' + nazwa)
-    plt.xlabel('Przedział')
-    plt.ylabel('Liczba obserwacji')
-    plt.show() 
-        
-### ZADANIE (1.5p.) ###
-# Zapisać powyższe statystyki i wykresy do plików PDF, osobnych dla poszczególnych zmiennych
-# (można wykorzystać dowolny moduł/bibliotekę).
-### KONIEC ###
+    with PdfPages("{}.pdf".format(nazwa)) as pdf:
+        plt.hist(zmienna, 100)
+        plt.title('Histogram dla: ' + nazwa)
+        plt.xlabel('Przedział')
+        plt.ylabel('Liczba obserwacji')
+        pdf.savefig()
+        plt.show()
 
 
+# ### ZADANIE (1.5p.) ###
+# # Zapisać powyższe statystyki i wykresy do plików PDF, osobnych dla poszczególnych zmiennych
+# # (można wykorzystać dowolny moduł/bibliotekę).
+# ### KONIEC ###
+#
+#
 #########################################
 # D. Badanie korelacji między zmiennymi #
 #########################################
-       
-print()      
+
+print()
 print("KORELACJE")
 
 # Piszemy funkcję, która zwróci korelację unormowaną między zestawami danych
@@ -169,7 +189,7 @@ for nazwa1,zmienna1 in zmienne.items():
             print("Korelacja między", nazwa1,"a", nazwa2,"wynosi:", end=" ")
             print(ncorrelate(zmienna1,zmienna2))
 
-# Przykładowe wykresy
+#Przykładowe wykresy
 
 # 1. Zmienne z dużą korelacją dodatnią: moc, przeplyw
 
@@ -239,7 +259,7 @@ y = temp_in
 a,b = np.polyfit(x,y,1)  # Wielomian 1 rzędu - prosta
 print("Wzór prostej: y(x) =",a,"* x +",b)
 # Wyliczamy punkty prostej otrzymanej w wyniku regresji
-yreg =  [a*i + b for i in x] 
+yreg =  [a*i + b for i in x]
 # Wykresy
 plt.plot(x,y)
 plt.plot(x,yreg)
@@ -248,23 +268,58 @@ plt.xlabel('Numer obserwacji')
 plt.ylabel('temp_in')
 plt.show()
 
-### ZADANIE (1.5p.) ###
-# Z wykresu widać, że regresja liniowa dla całości zmiennej temp_in słabo się sprawdza.
-# Wynika to z tego, że inaczej dane rozkładają się w róznych porach roku.
-# Należy więc podzielić dane na kilka podzakresów i regresję wykonać osobno
-# dla każdego z podzakresu. Narysować odpowiedni wykres.
-### KONIEC ###
+
+# ### ZADANIE (1.5p.) ###
+# # Z wykresu widać, że regresja liniowa dla całości zmiennej temp_in słabo się sprawdza.
+# # Wynika to z tego, że inaczej dane rozkładają się w róznych porach roku.
+# # Należy więc podzielić dane na kilka podzakresów i regresję wykonać osobno
+# # dla każdego z podzakresu. Narysować odpowiedni wykres.
+# ### KONIEC ###
+
+print()
+print("Regresja liniowa dla czterech zakresów")
+# Wybieramy zmienną temp_in w funkcji numeru obserwacji
+calosc = range(len(temp_in))
+y = temp_in
+yreg = []
+z = np.asarray(temp_in)
+for chunk in np.array_split(z,4):
+    x = range(len(chunk))
+    a, b = np.polyfit(x, chunk, 1)
+    print("Wzór prostej: y(x) =", a, "* x +", b)
+    yreg += [a * i + b for i in x]
+# # Wykresy
+plt.plot(calosc,y)
+plt.plot(calosc,yreg)
+plt.title("Regresja liniowa dla czterech zakresów danych zmiennej temp_in")
+plt.xlabel('Numer obserwacji')
+plt.ylabel('temp_in')
+plt.show()
 
 
-### ZADANIE (1.5p.) ###
-# Przeprowadzić regresję wielomianową wielomianem 2 stopnia dla zmiennej temp_in.
-# Narysować wykres otrzymanej krzywej na tle zmiennej temp_in.
-### KONIEC ###
+# ### ZADANIE (1.5p.) ###
+# # Przeprowadzić regresję wielomianową wielomianem 2 stopnia dla zmiennej temp_in.
+# # Narysować wykres otrzymanej krzywej na tle zmiennej temp_in.
+# ### KONIEC ###
+#
+print()
+print("REGRESJA LINIOWA DRUGIEGO STOPNIA")
+x = range(len(temp_in))
+y = temp_in
+a,b,c = np.polyfit(x,y,2)
+print("Wzór prostej: y(x) =",a,"* x +",b)
+yreg =  [a*(i**2) +b*i + c for i in x]
+plt.plot(x,y)
+plt.plot(x,yreg)
+plt.title("Regresja liniowa drugiego stopnia dla zmiennej temp_in")
+plt.xlabel('Numer obserwacji')
+plt.ylabel('temp_in')
+plt.show()
 
 
 # Regresja liniowa dla zmiennych z dużą korelacją dodatnią: moc, przeplyw
 a,b = np.polyfit(moc,przeplyw,1)  # Wielomian 1 rzędu - prosta
-yreg =  [a*i + b for i in moc] 
+yreg =  [a*i + b for i in moc]
 # Wykresy
 plt.plot(moc,przeplyw,".")
 plt.plot(moc,yreg)
@@ -276,7 +331,7 @@ plt.show()
 
 # Regresja liniowa dla zmiennych ze słabą korelacją ujemną: roznica_temp, temp_out
 a,b = np.polyfit(roznica_temp,temp_out,1)  # Wielomian 1 rzędu - prosta
-yreg =  [a*i + b for i in roznica_temp] 
+yreg =  [a*i + b for i in roznica_temp]
 # Wykresy
 plt.plot(roznica_temp,temp_out,".")
 plt.plot(roznica_temp,yreg)
@@ -286,11 +341,11 @@ plt.ylabel('temp_out')
 plt.show()
 
 # Predykcja danych z losowej listy
-roznica_temp = []	
+roznica_temp = []
 import random
 for i in range(20):
 	roznica_temp.append(random.randint(0,100))
-	
+
 # Wyliczenie wyników na podstawie regresji i zapis do listy
 temp_out = [[i, a*i+b] for i in roznica_temp]
 print("Wyniki predykcji:",temp_out)
