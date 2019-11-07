@@ -20,7 +20,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	private static final String brokerUrl = "tcp://localhost:1883";
 	protected static String clientId;
 	protected static String topic;
-	private static int qos = 0;
+	private static int qos = 1;
 	String nState;
 
 	public static void main(String[] args) throws IOException {
@@ -32,9 +32,8 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 		System.out.print("Enter the topic: ");
 		setTopic(reader.readLine());
-
+		
 		new Inmate().subscribe(topic);
-
 
 	}
 
@@ -42,7 +41,6 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
-
 			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
@@ -74,7 +72,11 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	public static void setClientId(String clientId) {
 		Inmate.clientId = clientId;
 	}
-	
+
+	public static String getClientId() {
+		return clientId;
+	}
+
 	public String getnState() {
 		return nState;
 	}
@@ -110,7 +112,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
-			MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			MqttClient sampleClient = new MqttClient(brokerUrl, getClientId(), persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			System.out.println("Connecting to broker: " + brokerUrl);
@@ -119,11 +121,12 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
 			message.setQos(qos);
-			sampleClient.publish(topic, message);
+			message.setRetained(true);
+			sampleClient.publish(getTopic(), message);
 			System.out.println("Message published");
-			sampleClient.disconnect();
-			sampleClient.close();
-			System.exit(0);
+			//sampleClient.disconnect();
+			//sampleClient.close();
+			//System.exit(0);
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
@@ -136,14 +139,12 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 	@Override
 	public void connectionLost(Throwable arg0) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Connection lost");
 	}
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		// TODO Auto-generated method stub
-
+		System.out.println("Delivery Complete");
 	}
 
 }

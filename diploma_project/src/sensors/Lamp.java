@@ -14,7 +14,7 @@ import abstracts.SubscriberAbstract;
 public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 	
 	private static final String brokerUrl = "tcp://localhost:1883";
-	private static int qos = 0;
+	private static int qos = 1;
 	protected static String state;
 	private static String clientId;
 	private static String topic;
@@ -26,7 +26,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		setTopic("lampa");
 		
 		new Lamp().publish(getState());
-		Thread.sleep(1000);
+		Thread.sleep(5000);
 		new Lamp().subscribe(getTopic());
 
 	}
@@ -44,18 +44,22 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
 			message.setQos(qos);
+			message.setRetained(true);
 			sampleClient.publish(topic, message);
 			System.out.println("Message published");
-			sampleClient.disconnect();
-			sampleClient.close();
-			System.exit(0);
-		} catch (MqttException me) {
+			Thread.sleep(1000);
+			//sampleClient.disconnect();
+			//sampleClient.close();
+			//System.exit(0);
+		} catch (MqttException me ) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
 			System.out.println("loc " + me.getLocalizedMessage());
 			System.out.println("cause " + me.getCause());
 			System.out.println("excep " + me);
 			me.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -106,21 +110,23 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	@Override
 	public void connectionLost(Throwable arg0) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Connection lost");		
 	}
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Delivery Complete");		
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		System.out.println("-------------------------------------------");
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
+		
+		setState(message.toString());
+		System.out.println("Zmieniono stan lampki na " + message.toString());
 		
 	}
 	
