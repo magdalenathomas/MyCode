@@ -3,6 +3,7 @@ package clients;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -22,16 +23,22 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	protected static String topic;
 	private static int qos = 1;
 	String nState;
+	Random generator = new Random();
+	
+	public Inmate() {
+		topic = "lampa";
+		clientId = "m";
+	}
 
 	public static void main(String[] args) throws IOException {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 		System.out.print("Enter your id: ");
 		setClientId(reader.readLine());
 
 		System.out.print("Enter the topic: ");
-		setTopic(reader.readLine());
+		setTopic(reader.readLine());*/
 		
 		new Inmate().subscribe(topic);
 
@@ -86,12 +93,18 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	}
 
 	@Override
-	public void messageArrived(String topic, MqttMessage message) {
+	public void messageArrived(String topic, MqttMessage message) throws IOException {
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
-		changeState(message);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+		System.out.print("Would you like to change the state? Write yes or no");
+		if (reader.readLine().equals("yes")) {
+			changeState(message);
+		} 		
+		
 	}
 
 	public void changeState(MqttMessage message) {
