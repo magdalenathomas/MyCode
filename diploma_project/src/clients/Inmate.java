@@ -15,18 +15,22 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
+import abstracts.Watch;
 
 public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
 
 	private static final String brokerUrl = "tcp://localhost:1883";
 	protected static String clientId;
 	protected static String topic;
-	private static int qos = 1;
+	private static int qos = 0;
+	//private static long start;
+	//private static long stop;
+	//private static long odds;
 	String nState;
-	Random generator = new Random();
+	//Random generator = new Random();
 	
 	public Inmate() {
-		topic = "lampa";
+		topic = "aavvv";
 		clientId = "m";
 	}
 
@@ -52,16 +56,17 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 
-			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
+			System.out.println("Connecting to broker: " + brokerUrl);
 
 			client.connect(connOpts);
 			System.out.println("Mqtt Connected");
 
 			client.setCallback(this);
 			client.subscribe(topic);
-
-			System.out.println("Subscribed");
-			System.out.println("Listening");
+			//start = System.currentTimeMillis();
+			//System.out.println("clock is active");
+			
+			System.out.println("Subscribed topic: " + topic);
 
 		} catch (MqttException me) {
 			System.out.println(me);
@@ -94,16 +99,23 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws IOException {
+		
+		Watch.stop();
+		Watch.time();
+		//stop = (long) (System.currentTimeMillis()/1000.0);
+		//System.out.println("clock is stopped " + stop);
+		//odds = stop - start;
+		//System.out.println("Czas odpowiedzi wynosi: " + odds);
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 		System.out.print("Would you like to change the state? Write yes or no");
 		if (reader.readLine().equals("yes")) {
 			changeState(message);
-		} 		
+		}*/ 		
 		
 	}
 
@@ -152,7 +164,6 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 	@Override
 	public void connectionLost(Throwable arg0) {
-		System.out.println("Connection lost");
 	}
 
 	@Override

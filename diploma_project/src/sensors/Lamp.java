@@ -10,24 +10,26 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
+import abstracts.Watch;
 
-public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
+public class Lamp extends Watch implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 	
 	private static final String brokerUrl = "tcp://localhost:1883";
-	private static int qos = 1;
+	private static int qos = 0;
 	protected static String state;
 	private static String clientId;
 	private static String topic;
+	//private static long start;
 	
 	public static void main(String[] args) throws InterruptedException {
 		
 		setState("on");
 		setClientId("Lampa");
-		setTopic("lampa");
+		setTopic("aavvv");
 		
 		new Lamp().publish(getState());
-		Thread.sleep(5000);
-		new Lamp().subscribe(getTopic());
+		//Thread.sleep(5000);
+		//new Lamp().subscribe(getTopic());
 
 	}
 
@@ -46,6 +48,9 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			message.setQos(qos);
 			message.setRetained(true);
 			sampleClient.publish(topic, message);
+			//start = (long) (System.currentTimeMillis()/1000.0);
+			//System.out.println("clock is strat " + start );
+			Watch.start();
 			System.out.println("Message published");
 			Thread.sleep(1000);
 			//sampleClient.disconnect();
@@ -80,6 +85,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 	}
 	public static void setState(String state) {
 		Lamp.state = state;
+
 	}
 
 	@Override
@@ -100,8 +106,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			client.setCallback(this);
 			client.subscribe(topic);
 
-			System.out.println("Subscribed");
-			System.out.println("Listening");
+			System.out.println("Subscribed topic: " + topic);
 
 		} catch (MqttException me) {
 			System.out.println(me);
@@ -110,7 +115,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	@Override
 	public void connectionLost(Throwable arg0) {
-		System.out.println("Connection lost");		
 	}
 
 	@Override
@@ -126,7 +130,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		System.out.println("-------------------------------------------------");
 		
 		setState(message.toString());
-		System.out.println("Zmieniono stan lampki na " + message.toString());
+		System.out.println("Zmieniono stan lampki na " + state);
 		
 	}
 	
