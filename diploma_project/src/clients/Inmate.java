@@ -3,6 +3,7 @@ package clients;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.util.Random;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -17,34 +18,23 @@ import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 import abstracts.Watch;
 
-public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
+public class  Inmate extends timer.Client implements SubscriberAbstract, MqttCallback, PublisherAbstract {
 
 	private static final String brokerUrl = "tcp://localhost:1883";
 	protected static String clientId;
 	protected static String topic;
 	private static int qos = 0;
-	//private static long start;
-	//private static long stop;
-	//private static long odds;
 	String nState;
-	//Random generator = new Random();
 	
-	public Inmate() {
+	public Inmate(String address, int port) {
+		super(address, port);
 		topic = "aavvv";
 		clientId = "m";
 	}
 
 	public static void main(String[] args) throws IOException {
-
-		/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-		System.out.print("Enter your id: ");
-		setClientId(reader.readLine());
-
-		System.out.print("Enter the topic: ");
-		setTopic(reader.readLine());*/
 		
-		new Inmate().subscribe(topic);
+		new Inmate("127.0.0.1", 5000).subscribe(topic);
 
 	}
 
@@ -100,22 +90,19 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws IOException {
 		
-		Watch.stop();
-		Watch.time();
-		//stop = (long) (System.currentTimeMillis()/1000.0);
-		//System.out.println("clock is stopped " + stop);
-		//odds = stop - start;
-		//System.out.println("Czas odpowiedzi wynosi: " + odds);
+		//TIMER
+		output();
+		input();
+		
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
 		/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
 		System.out.print("Would you like to change the state? Write yes or no");
 		if (reader.readLine().equals("yes")) {
 			changeState(message);
-		}*/ 		
+		} */		
 		
 	}
 
@@ -129,7 +116,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		}
 		
 		
-		new Inmate().publish(getnState());
+		//new Inmate().publish(getnState());
 	}
 
 	@Override
@@ -169,6 +156,16 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
 		System.out.println("Delivery Complete");
+	}
+
+	@Override
+	public void output() {
+		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject("stop");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -1,4 +1,6 @@
 package sensors;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -10,9 +12,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
-import abstracts.Watch;
 
-public class Lamp extends Watch implements PublisherAbstract, SubscriberAbstract, MqttCallback {
+public class Lamp extends timer.Client implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 	
 	private static final String brokerUrl = "tcp://localhost:1883";
 	private static int qos = 0;
@@ -21,13 +22,18 @@ public class Lamp extends Watch implements PublisherAbstract, SubscriberAbstract
 	private static String topic;
 	//private static long start;
 	
+	//ustawienie adresu IP oraz portu na ktorym beda dzialy sockety
+	public Lamp(String address, int port) {
+		super(address, port);
+	}
+	
 	public static void main(String[] args) throws InterruptedException {
 		
 		setState("on");
 		setClientId("Lampa");
 		setTopic("aavvv");
 		
-		new Lamp().publish(getState());
+		new Lamp("127.0.0.1", 5000).publish(getState());
 		//Thread.sleep(5000);
 		//new Lamp().subscribe(getTopic());
 
@@ -48,9 +54,11 @@ public class Lamp extends Watch implements PublisherAbstract, SubscriberAbstract
 			message.setQos(qos);
 			message.setRetained(true);
 			sampleClient.publish(topic, message);
-			//start = (long) (System.currentTimeMillis()/1000.0);
-			//System.out.println("clock is strat " + start );
-			Watch.start();
+			
+			//TIMER
+			output();
+			input();
+		
 			System.out.println("Message published");
 			Thread.sleep(1000);
 			//sampleClient.disconnect();
@@ -132,6 +140,16 @@ public class Lamp extends Watch implements PublisherAbstract, SubscriberAbstract
 		setState(message.toString());
 		System.out.println("Zmieniono stan lampki na " + state);
 		
+	}
+
+	@Override
+	public void output() {
+		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject("start");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
