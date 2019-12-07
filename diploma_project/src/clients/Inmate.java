@@ -28,7 +28,7 @@ public class  Inmate extends timer.Client implements SubscriberAbstract, MqttCal
 	
 	public Inmate(String address, int port) {
 		super(address, port);
-		topic = "aavvv";
+		topic = "lamp";
 		clientId = "m";
 	}
 

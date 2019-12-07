@@ -31,7 +31,7 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 		
 		setState("on");
 		setClientId("Lampa");
-		setTopic("aavvv");
+		setTopic("lamp");
 		
 		new Lamp("127.0.0.1", 5000).publish(getState());
 		//Thread.sleep(5000);
