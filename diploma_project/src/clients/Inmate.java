@@ -1,11 +1,8 @@
 package clients;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Random;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -17,7 +14,6 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
-import abstracts.Watch;
 
 public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract, timer.Client {
 
@@ -27,27 +23,12 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 	protected static String topic;
 	private static int qos = 0;
 	String nState;
-	private static String address;
-	private static int port;
 	public static ObjectOutputStream oos;
-	//private static Socket socket;
+	public static int number;
 	
-	public Inmate() {
-		//address = this.address;
-		//port = this.port;
-	/*	try {
-			Socket socket = new Socket(address, port);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-    	topic = "lamp";
-		clientId = "m";
-	}
-
-	public static void main(String[] args) throws IOException {
-		
-		new Inmate().subscribe(topic);
-
+	public Inmate(int number) {
+		setTopic("lamp");
+		setClientId("domownik");
 	}
 
 	public void subscribe(String topic) {
@@ -65,11 +46,11 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 
 			client.setCallback(this);
 			client.subscribe(topic);
-			//start = System.currentTimeMillis();
-			//System.out.println("clock is active");
-			
 			System.out.println("Subscribed topic: " + topic);
-
+			
+			client.disconnect();
+			client.close();
+		
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
@@ -104,7 +85,6 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 		
 		//TIMER
 		output();
-		//input();
 		
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
@@ -136,20 +116,20 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
-			MqttClient sampleClient = new MqttClient(brokerUrl, getClientId(), persistence);
+			MqttClient client = new MqttClient(brokerUrl, getClientId(), persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			System.out.println("Connecting to broker: " + brokerUrl);
-			sampleClient.connect(connOpts);
+			client.connect(connOpts);
 			System.out.println("Connected to broker");
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
 			message.setQos(qos);
 			message.setRetained(true);
-			sampleClient.publish(getTopic(), message);
+			client.publish(getTopic(), message);
 			System.out.println("Message published");
-			//sampleClient.disconnect();
-			//sampleClient.close();
+			client.disconnect();
+			client.close();
 			//System.exit(0);
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
@@ -171,30 +151,22 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 	}
 
 	@Override
-	public void output() {
+	public void output(int number) {
 		try {
 			Socket socket = new Socket("127.0.0.1", 5000);
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject("stop");
+			if (number == 100) {
+				oos = new ObjectOutputStream(socket.getOutputStream());
+				oos.writeObject("stop");
+			}
+			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void input() {
+	public void output() {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
-	/*public void output() {
-		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			oos.writeObject("stop");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}*/
-
 }

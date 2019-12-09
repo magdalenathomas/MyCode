@@ -24,23 +24,10 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 	protected static String state;
 	private static String clientId;
 	private static String topic;
-	private static String address;
-	private static int port;
 	public static ObjectOutputStream oos;
 	public static ObjectInputStream ois;
-	private static Socket socket;
 
-	// private static long start;
-
-	// ustawienie adresu IP oraz portu na ktorym beda dzialy sockety
 	public Lamp() {
-		// address = this.address;
-		// port = this.port;
-		/*try {
-			Socket socket = new Socket("127.0.0.1", 5000);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 
 	public static void main(String[] args) throws InterruptedException {
@@ -50,8 +37,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		setTopic("lamp");
 
 		new Lamp().publish(getState());
-		// Thread.sleep(5000);
-		// new Lamp().subscribe(getTopic());
 
 	}
 
@@ -59,26 +44,25 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
-			MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			System.out.println("Connecting to broker: " + brokerUrl);
-			sampleClient.connect(connOpts);
+			client.connect(connOpts);
 			System.out.println("Connected to broker");
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
 			message.setQos(qos);
 			message.setRetained(true);
-			sampleClient.publish(topic, message);
+			client.publish(topic, message);
 
 			// TIMER
 			output();
-			//input();
 
 			System.out.println("Message published");
 			Thread.sleep(1000);
-			// sampleClient.disconnect();
-			// sampleClient.close();
+			client.disconnect();
+			client.close();
 			// System.exit(0);
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
@@ -118,7 +102,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
-
 			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
@@ -130,9 +113,9 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 			client.setCallback(this);
 			client.subscribe(topic);
-
 			System.out.println("Subscribed topic: " + topic);
-
+			client.disconnect();
+			client.close();
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
@@ -165,28 +148,16 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			Socket socket = new Socket("127.0.0.1", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject("start");
+			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Override
-	public void input() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	/*@Override
-	public void input() {
-	
-		try {
-			Socket socket = new Socket("127.0.0.1", 5000);
-			ois = new ObjectInputStream(socket.getInputStream());
-			String message = (String) ois.readObject();
-			System.out.println("Message: " + message);
-			ois.close();
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}*/
+	@Override
+	public void output(int number) {
+		// TODO Auto-generated method stub
+
+	}
 }
