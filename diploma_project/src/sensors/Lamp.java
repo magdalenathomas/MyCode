@@ -16,7 +16,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 
-public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback, timer.Client {
+public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 
 	// private static final String brokerUrl = "tcp://localhost:1883";
 	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
@@ -142,7 +142,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	}
 
-	@Override
 	public void output() {
 		try {
 			Socket socket = new Socket("127.0.0.1", 5000);
@@ -152,12 +151,5 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-
-	@Override
-	public void output(int number) {
-		// TODO Auto-generated method stub
-
 	}
 }

@@ -2,7 +2,6 @@ package clients;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -15,7 +14,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 
-public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract, timer.Client {
+public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
 
 	//private static final String brokerUrl = "tcp://localhost:1883";
 	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
@@ -84,7 +83,7 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 	public void messageArrived(String topic, MqttMessage message) throws IOException {
 		
 		//TIMER
-		output();
+		//output();
 		
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
@@ -150,23 +149,5 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 		System.out.println("Delivery Complete");
 	}
 
-	@Override
-	public void output(int number) {
-		try {
-			Socket socket = new Socket("127.0.0.1", 5000);
-			if (number == 100) {
-				oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject("stop");
-			}
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void output() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }
