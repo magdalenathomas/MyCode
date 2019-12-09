@@ -5,31 +5,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public abstract class Client {
+public interface Client {
 
-	protected static Socket socket;
-	protected static ObjectOutputStream oos;
-	protected static ObjectInputStream ois;
+	//public static Socket socket;
+	//public static ObjectOutputStream oos;
+	//public static ObjectInputStream ois;
 
-	public Client(String address, int port) {
+	/*public Client(String address, int port) {
 
 		try {
-			socket = new Socket(address, port);
+			Socket socket = new Socket(address, port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
-	public void input() {
-		try {
-			ois = new ObjectInputStream(socket.getInputStream());
-			String message = (String) ois.readObject();
-			System.out.println("Message: " + message);
-			ois.close();
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+	public void input(); 
 
-	public abstract void output();
+	public void output();
 }

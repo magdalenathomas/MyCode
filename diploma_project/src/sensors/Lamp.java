@@ -1,6 +1,9 @@
 package sensors;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -13,35 +16,48 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 
-public class Lamp extends timer.Client implements PublisherAbstract, SubscriberAbstract, MqttCallback {
-	
-	private static final String brokerUrl = "tcp://localhost:1883";
+public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback, timer.Client {
+
+	// private static final String brokerUrl = "tcp://localhost:1883";
+	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
 	private static int qos = 0;
 	protected static String state;
 	private static String clientId;
 	private static String topic;
-	//private static long start;
-	
-	//ustawienie adresu IP oraz portu na ktorym beda dzialy sockety
-	public Lamp(String address, int port) {
-		super(address, port);
+	private static String address;
+	private static int port;
+	public static ObjectOutputStream oos;
+	public static ObjectInputStream ois;
+	private static Socket socket;
+
+	// private static long start;
+
+	// ustawienie adresu IP oraz portu na ktorym beda dzialy sockety
+	public Lamp() {
+		// address = this.address;
+		// port = this.port;
+		/*try {
+			Socket socket = new Socket("127.0.0.1", 5000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
 	}
-	
+
 	public static void main(String[] args) throws InterruptedException {
-		
+
 		setState("on");
 		setClientId("Lampa");
 		setTopic("lamp");
-		
-		new Lamp("127.0.0.1", 5000).publish(getState());
-		//Thread.sleep(5000);
-		//new Lamp().subscribe(getTopic());
+
+		new Lamp().publish(getState());
+		// Thread.sleep(5000);
+		// new Lamp().subscribe(getTopic());
 
 	}
 
 	public void publish(String state) {
 		MemoryPersistence persistence = new MemoryPersistence();
-		
+
 		try {
 			MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -54,17 +70,17 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 			message.setQos(qos);
 			message.setRetained(true);
 			sampleClient.publish(topic, message);
-			
-			//TIMER
+
+			// TIMER
 			output();
-			input();
-		
+			//input();
+
 			System.out.println("Message published");
 			Thread.sleep(1000);
-			//sampleClient.disconnect();
-			//sampleClient.close();
-			//System.exit(0);
-		} catch (MqttException me ) {
+			// sampleClient.disconnect();
+			// sampleClient.close();
+			// System.exit(0);
+		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
 			System.out.println("loc " + me.getLocalizedMessage());
@@ -75,7 +91,7 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void setClientId(String clientId) {
 		Lamp.clientId = clientId;
 	}
@@ -87,10 +103,11 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 	public static String getTopic() {
 		return topic;
 	}
-	
+
 	public static String getState() {
 		return state;
 	}
+
 	public static void setState(String state) {
 		Lamp.state = state;
 
@@ -127,7 +144,7 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		System.out.println("Delivery Complete");		
+		System.out.println("Delivery Complete");
 	}
 
 	@Override
@@ -136,20 +153,40 @@ public class Lamp extends timer.Client implements PublisherAbstract, SubscriberA
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
-		
+
 		setState(message.toString());
 		System.out.println("Zmieniono stan lampki na " + state);
-		
+
 	}
 
 	@Override
 	public void output() {
 		try {
+			Socket socket = new Socket("127.0.0.1", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject("start");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void input() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/*@Override
+	public void input() {
 	
+		try {
+			Socket socket = new Socket("127.0.0.1", 5000);
+			ois = new ObjectInputStream(socket.getInputStream());
+			String message = (String) ois.readObject();
+			System.out.println("Message: " + message);
+			ois.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}*/
 }

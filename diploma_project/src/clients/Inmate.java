@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.Random;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -18,23 +19,34 @@ import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 import abstracts.Watch;
 
-public class  Inmate extends timer.Client implements SubscriberAbstract, MqttCallback, PublisherAbstract {
+public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract, timer.Client {
 
-	private static final String brokerUrl = "tcp://localhost:1883";
+	//private static final String brokerUrl = "tcp://localhost:1883";
+	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
 	protected static String clientId;
 	protected static String topic;
 	private static int qos = 0;
 	String nState;
+	private static String address;
+	private static int port;
+	public static ObjectOutputStream oos;
+	//private static Socket socket;
 	
-	public Inmate(String address, int port) {
-		super(address, port);
-		topic = "lamp";
+	public Inmate() {
+		//address = this.address;
+		//port = this.port;
+	/*	try {
+			Socket socket = new Socket(address, port);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+    	topic = "lamp";
 		clientId = "m";
 	}
 
 	public static void main(String[] args) throws IOException {
 		
-		new Inmate("127.0.0.1", 5000).subscribe(topic);
+		new Inmate().subscribe(topic);
 
 	}
 
@@ -92,7 +104,7 @@ public class  Inmate extends timer.Client implements SubscriberAbstract, MqttCal
 		
 		//TIMER
 		output();
-		input();
+		//input();
 		
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
@@ -161,11 +173,28 @@ public class  Inmate extends timer.Client implements SubscriberAbstract, MqttCal
 	@Override
 	public void output() {
 		try {
+			Socket socket = new Socket("127.0.0.1", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject("stop");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void input() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	/*public void output() {
+		try {
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject("stop");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}*/
 
 }

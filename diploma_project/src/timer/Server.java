@@ -21,7 +21,7 @@ public class Server {
 			// tworzenie socketa do nasluchiwania
 			server = new ServerSocket(port);
 			System.out.println("Server started!");
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 10; i++) {
 				System.out.println("Waiting for a client...");
 
 				// polaczenie z klientem
@@ -40,10 +40,14 @@ public class Server {
 					oos.close();
 				} else if (message.equalsIgnoreCase("stop")) {
 					stop = System.currentTimeMillis();
+					break;
+				}
+				/*} else if (message.equalsIgnoreCase("stop")) {
+					stop = System.currentTimeMillis();
 					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 					oos.writeObject("Zatrzymuje zegar " + stop);
 					oos.close();
-				} else {
+				} */ else {
 					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 					oos.writeObject("Nie rozpoznano komedy");
 					oos.close();
@@ -53,8 +57,8 @@ public class Server {
 				ois.close();
 				socket.close();
 				// terminate the server if client sends exit request
-				if (message.equalsIgnoreCase("exit"))
-					break;
+				/*if (message.equalsIgnoreCase("exit"))
+					break;*/
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
