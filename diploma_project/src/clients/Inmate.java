@@ -2,6 +2,7 @@ package clients;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -14,47 +15,46 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import abstracts.PublisherAbstract;
 import abstracts.SubscriberAbstract;
 
-public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
+public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
 
-	//private static final String brokerUrl = "tcp://localhost:1883";
-	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
+	private static final String brokerUrl = "tcp://localhost:1883";
+	// private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
 	protected static String clientId;
 	protected static String topic;
-	private static int qos = 0;
-	String nState;
+	private static int qos = 1;
+	// String nState;
 	public static ObjectOutputStream oos;
-	public static int number;
-	
+	public int number;
+
 	public Inmate(int number) {
+		number = this.number;
 		setTopic("lamp");
-		setClientId("domownik");
+		setClientId(MqttClient.generateClientId()); // randomly generated client identifier
 	}
 
 	public void subscribe(String topic) {
-		MemoryPersistence persistence = new MemoryPersistence();
+		MemoryPersistence persistence = new MemoryPersistence(); // to store in-flight messages
 
 		try {
 			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
-			connOpts.setCleanSession(true);
-
+			connOpts.setCleanSession(true); // the broker doesn't store undelivered messages
 			System.out.println("Connecting to broker: " + brokerUrl);
-
 			client.connect(connOpts);
-			System.out.println("Mqtt Connected");
-
-			client.setCallback(this);
+			System.out.println("Connected successfully!");
+			client.setCallback(this); // create a listener for events - messageArrived, lost connection, delivery
+										// completed
 			client.subscribe(topic);
 			System.out.println("Subscribed topic: " + topic);
-			
-			client.disconnect();
-			client.close();
-		
+
+			client.disconnect(); // disconnects from the server
+			client.close(); // close the client and releases all resources associated with client
+
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
 	}
-
+	
 	public static String getTopic() {
 		return topic;
 	}
@@ -71,44 +71,61 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 		return clientId;
 	}
 
-	public String getnState() {
-		return nState;
+	/*
+	 * public String getnState() { return nState; }
+	 */
+
+	/*
+	 * public void setnState(String nState) { this.nState = nState; }
+	 */
+
+	@Override
+	public void connectionLost(Throwable arg0) {
+		System.out.println("The connection to the server has been lost.");
 	}
 
-	public void setnState(String nState) {
-		this.nState = nState;
+	@Override
+	public void deliveryComplete(IMqttDeliveryToken arg0) {
+		System.out.println("Delivery of a messsage to the server has completed.");
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws IOException {
-		
-		//TIMER
-		//output();
-		
+
 		System.out.println("| Topic:" + topic);
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
-		/*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		System.out.print("Would you like to change the state? Write yes or no");
-		if (reader.readLine().equals("yes")) {
-			changeState(message);
-		} */		
-		
+		/*try {
+			if (number == 5) {
+				Socket socket = new Socket("127.0.0.1", 5000);
+				oos = new ObjectOutputStream(socket.getOutputStream());
+				oos.writeObject("stop");
+				socket.close();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+
+		/*
+		 * BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		 * System.out.print("Would you like to change the state? Write yes or no"); if
+		 * (reader.readLine().equals("yes")) { changeState(message); }
+		 */
+
 	}
 
-	public void changeState(MqttMessage message) {
-		System.out.println("Rozpoczeto proces zmian...");
-
-		if (message.toString().equals("on")) {
-			setnState("off");
-		} else {
-			setnState("on");
-		}
-		
-		
-		//new Inmate().publish(getnState());
-	}
+	/*
+	 * public void changeState(MqttMessage message) {
+	 * System.out.println("Rozpoczeto proces zmian...");
+	 * 
+	 * if (message.toString().equals("on")) { setnState("off"); } else {
+	 * setnState("on"); }
+	 * 
+	 * 
+	 * //new Inmate().publish(getnState()); }
+	 */
 
 	@Override
 	public void publish(String state) {
@@ -129,7 +146,7 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 			System.out.println("Message published");
 			client.disconnect();
 			client.close();
-			//System.exit(0);
+			// System.exit(0);
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
@@ -140,14 +157,4 @@ public class  Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstr
 		}
 	}
 
-	@Override
-	public void connectionLost(Throwable arg0) {
-	}
-
-	@Override
-	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		System.out.println("Delivery Complete");
-	}
-
-	
 }

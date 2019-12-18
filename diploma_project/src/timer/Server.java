@@ -7,32 +7,29 @@ import java.net.Socket;
 
 public class Server {
 
-	private Socket socket; // socket do komunikacji z klientem
-	private ServerSocket server; // socket do nasluchiwania
+	private Socket socket; // socket for communication with client
+	private ServerSocket server; // listening socket
 
 	public static long start;
 	public static long stop;
-	public static long time;
 
 	public Server(int port) throws ClassNotFoundException {
 
 		try {
-			// tworzenie socketa do nasluchiwania
-			server = new ServerSocket(port);
+			server = new ServerSocket(port); // creating listening socket
 			System.out.println("Server started!");
-			//while(true) {
-			for (int i = 0; i < 100; i++) {
+
+			while (true) {
 				System.out.println("Waiting for a client...");
 
-				// polaczenie z klientem
-				socket = server.accept();
+				socket = server.accept(); // connecting with client
 				System.out.println("Client accepted!");
 
-				// read from socket to ObjectInputStream object
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				// convert ObjectInputStream object to String
-				String message = (String) ois.readObject();
+				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream()); // read from socket to
+																						// ObjectInputStream object
+				String message = (String) ois.readObject(); // convert ObjectInputStream object to String
 				System.out.println("Message Received: " + message);
+
 				if (message.equalsIgnoreCase("start")) {
 					start = System.currentTimeMillis();
 				}
@@ -40,11 +37,12 @@ public class Server {
 					stop = System.currentTimeMillis();
 					break;
 				}
-				// close resources
-				ois.close();
-				socket.close();
-			//}
+
+				ois.close(); // closing ObjectInputStream
+				socket.close(); // closing socket for communication with client
 			}
+			server.close(); //closing listening socket
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -53,6 +51,6 @@ public class Server {
 	public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
 		new Server(5000);
 
-		System.out.println("Czas odpowiedzi wynosi: " + (stop - start) + " ms");
+		System.out.println("Response time: " + (stop - start) + " ms");
 	}
 }

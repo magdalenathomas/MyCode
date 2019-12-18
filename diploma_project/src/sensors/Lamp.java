@@ -18,9 +18,9 @@ import abstracts.SubscriberAbstract;
 
 public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 
-	// private static final String brokerUrl = "tcp://localhost:1883";
-	private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
-	private static int qos = 0;
+	private static final String brokerUrl = "tcp://localhost:1883";
+	// private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
+	private static int qos = 1;
 	protected static String state;
 	private static String clientId;
 	private static String topic;
@@ -41,38 +41,27 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 	}
 
 	public void publish(String state) {
-		MemoryPersistence persistence = new MemoryPersistence();
+		MemoryPersistence persistence = new MemoryPersistence(); // to store in-flight messages
 
 		try {
 			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
-			connOpts.setCleanSession(true);
+			connOpts.setCleanSession(true); // the broker doesn't store undelivered messages
 			System.out.println("Connecting to broker: " + brokerUrl);
 			client.connect(connOpts);
-			System.out.println("Connected to broker");
+			System.out.println("Connected successfully!");
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
-			message.setQos(qos);
-			message.setRetained(true);
+			message.setQos(qos); // set the Quality of Sevice
+			message.setRetained(true); // the broker keeps the last published message on that topic
 			client.publish(topic, message);
-
-			// TIMER
-			output();
-
+			output(); // timer output
 			System.out.println("Message published");
-			Thread.sleep(1000);
-			client.disconnect();
-			client.close();
-			// System.exit(0);
+			
+			client.disconnect(); // disconnects from the server
+			client.close(); // close the client and releases all resources associated with client
 		} catch (MqttException me) {
-			System.out.println("reason " + me.getReasonCode());
-			System.out.println("msg " + me.getMessage());
-			System.out.println("loc " + me.getLocalizedMessage());
-			System.out.println("cause " + me.getCause());
-			System.out.println("excep " + me);
-			me.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println(me);
 		}
 	}
 
@@ -94,7 +83,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	public static void setState(String state) {
 		Lamp.state = state;
-
 	}
 
 	@Override
@@ -123,11 +111,12 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	@Override
 	public void connectionLost(Throwable arg0) {
+		System.out.println("The connection to the server has been lost.");
 	}
 
 	@Override
 	public void deliveryComplete(IMqttDeliveryToken arg0) {
-		System.out.println("Delivery Complete");
+		System.out.println("Delivery of a messsage to the server has completed.");
 	}
 
 	@Override
@@ -138,10 +127,11 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		System.out.println("-------------------------------------------------");
 
 		setState(message.toString());
-		System.out.println("Zmieniono stan lampki na " + state);
+		System.out.println("The lamp status has been changed: " + state);
 
 	}
 
+	// sending message 'start' to timer
 	public void output() {
 		try {
 			Socket socket = new Socket("127.0.0.1", 5000);
