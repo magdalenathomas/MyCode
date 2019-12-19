@@ -18,16 +18,13 @@ import abstracts.SubscriberAbstract;
 public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstract {
 
 	private static final String brokerUrl = "tcp://localhost:1883";
-	// private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
 	protected static String clientId;
 	protected static String topic;
-	private static int qos = 1;
+	private static int qos = 2;
 	// String nState;
 	public static ObjectOutputStream oos;
-	public int number;
 
 	public Inmate(int number) {
-		number = this.number;
 		setTopic("lamp");
 		setClientId(MqttClient.generateClientId()); // randomly generated client identifier
 	}
@@ -54,7 +51,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 			System.out.println(me);
 		}
 	}
-	
+
 	public static String getTopic() {
 		return topic;
 	}
@@ -96,17 +93,16 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
-		/*try {
-			if (number == 5) {
-				Socket socket = new Socket("127.0.0.1", 5000);
-				oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject("stop");
-				socket.close();
-			}
+		//only used when QoS=1 or Qos=2
+		try {
+			Socket socket = new Socket("127.0.0.1", 5000);
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject("hi server!");
+			socket.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
 
 		/*
 		 * BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

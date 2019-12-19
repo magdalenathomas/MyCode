@@ -19,8 +19,7 @@ import abstracts.SubscriberAbstract;
 public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 
 	private static final String brokerUrl = "tcp://localhost:1883";
-	// private static final String brokerUrl = "tcp://broker.hivemq.com:1883";
-	private static int qos = 1;
+	private static int qos = 2;
 	protected static String state;
 	private static String clientId;
 	private static String topic;
@@ -29,7 +28,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	public Lamp() {
 	}
-
+	
 	public static void main(String[] args) throws InterruptedException {
 
 		setState("on");

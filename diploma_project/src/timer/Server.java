@@ -9,9 +9,9 @@ public class Server {
 
 	private Socket socket; // socket for communication with client
 	private ServerSocket server; // listening socket
-
 	public static long start;
 	public static long stop;
+	public static int counter = 0;
 
 	public Server(int port) throws ClassNotFoundException {
 
@@ -32,20 +32,30 @@ public class Server {
 
 				if (message.equalsIgnoreCase("start")) {
 					start = System.currentTimeMillis();
-				}
-				if (message.equalsIgnoreCase("stop")) {
-					stop = System.currentTimeMillis();
-					break;
+				} /*
+					 * else if (message.equalsIgnoreCase("stop")) { stop =
+					 * System.currentTimeMillis(); break; }
+					 */
+				if (message.equalsIgnoreCase("hi server!")) {
+					count();
+					if (counter == 1000) {
+						stop = System.currentTimeMillis();
+						break;
+					}
 				}
 
 				ois.close(); // closing ObjectInputStream
 				socket.close(); // closing socket for communication with client
 			}
-			server.close(); //closing listening socket
-			
+			server.close(); // closing listening socket
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public int count() {
+		return counter++;
 	}
 
 	public static void main(String[] args) throws InterruptedException, ClassNotFoundException {

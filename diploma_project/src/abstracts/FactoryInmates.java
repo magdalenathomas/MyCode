@@ -13,11 +13,13 @@ public class FactoryInmates {
 
 	public static void main(String[] args) {
 
-		for (int i = 1; i <= 5; i++) {
+		for (int i = 1; i <= 1000; i++) {
 			Inmate inmate = new Inmate(i);
 			inmate.subscribe(topic);
-			try {
-				if (i == 5) {
+			
+			//used when QoS=0
+			/*try {
+				if (i == 1000) {
 					Socket socket = new Socket("127.0.0.1", 5000);
 					oos = new ObjectOutputStream(socket.getOutputStream());
 					oos.writeObject("stop");
@@ -26,7 +28,7 @@ public class FactoryInmates {
 
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 			
 			
 		}
