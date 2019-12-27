@@ -24,11 +24,10 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 	private static String clientId;
 	private static String topic;
 	public static ObjectOutputStream oos;
-	public static ObjectInputStream ois;
 
 	public Lamp() {
 	}
-	
+
 	public static void main(String[] args) throws InterruptedException {
 
 		setState("on");
@@ -56,7 +55,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			client.publish(topic, message);
 			output(); // timer output
 			System.out.println("Message published");
-			
+
 			client.disconnect(); // disconnects from the server
 			client.close(); // close the client and releases all resources associated with client
 		} catch (MqttException me) {
@@ -91,13 +90,14 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 			System.out.println("Connecting to broker: " + brokerUrl);
 			client.connect(connOpts);
 			System.out.println("Connected successfully!");
-			client.setCallback(this);  // create a listener for events - messageArrived, lost connection, delivery completed
+			client.setCallback(this); // create a listener for events - messageArrived, lost connection, delivery
+										// completed
 			client.subscribe(topic);
 			System.out.println("Subscribed topic: " + topic);
-			
+
 			client.disconnect(); // disconnects from the server
-			client.close();  // close the client and releases all resources associated with client
-		
+			client.close(); // close the client and releases all resources associated with client
+
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
@@ -126,7 +126,7 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 	}
 
 	/*
-	 *  sending message 'start' to timer
+	 * sending message 'start' to timer
 	 */
 	public void output() {
 		try {

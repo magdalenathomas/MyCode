@@ -32,16 +32,19 @@ public class Server {
 
 				if (message.equalsIgnoreCase("start")) {
 					start = System.currentTimeMillis();
-				} /*
-					 * else if (message.equalsIgnoreCase("stop")) { stop =
-					 * System.currentTimeMillis(); break; }
-					 */
+				}
+				
 				if (message.equalsIgnoreCase("hi server!")) {
 					count();
 					if (counter == 1000) {
 						stop = System.currentTimeMillis();
 						break;
 					}
+				}
+
+				if (message.equalsIgnoreCase("stop")) {
+					stop = System.currentTimeMillis();
+					break;
 				}
 
 				ois.close(); // closing ObjectInputStream
