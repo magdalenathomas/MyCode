@@ -72,10 +72,6 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		Lamp.topic = topic;
 	}
 
-	public static String getTopic() {
-		return topic;
-	}
-
 	public static String getState() {
 		return state;
 	}
@@ -91,18 +87,17 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 		try {
 			MqttClient client = new MqttClient(brokerUrl, clientId, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
-			connOpts.setCleanSession(true);
-
-			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
-
+			connOpts.setCleanSession(true); // the broker doesn't store undelivered messages
+			System.out.println("Connecting to broker: " + brokerUrl);
 			client.connect(connOpts);
-			System.out.println("Mqtt Connected");
-
-			client.setCallback(this);
+			System.out.println("Connected successfully!");
+			client.setCallback(this);  // create a listener for events - messageArrived, lost connection, delivery completed
 			client.subscribe(topic);
 			System.out.println("Subscribed topic: " + topic);
-			client.disconnect();
-			client.close();
+			
+			client.disconnect(); // disconnects from the server
+			client.close();  // close the client and releases all resources associated with client
+		
 		} catch (MqttException me) {
 			System.out.println(me);
 		}
@@ -130,7 +125,9 @@ public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback
 
 	}
 
-	// sending message 'start' to timer
+	/*
+	 *  sending message 'start' to timer
+	 */
 	public void output() {
 		try {
 			Socket socket = new Socket("127.0.0.1", 5000);

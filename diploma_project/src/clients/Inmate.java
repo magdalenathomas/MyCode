@@ -21,7 +21,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	protected static String clientId;
 	protected static String topic;
 	private static int qos = 2;
-	// String nState;
+	protected static String nState;
 	public static ObjectOutputStream oos;
 
 	public Inmate(int number) {
@@ -60,21 +60,21 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		Inmate.topic = topic;
 	}
 
-	public static void setClientId(String clientId) {
-		Inmate.clientId = clientId;
-	}
-
 	public static String getClientId() {
 		return clientId;
 	}
 
-	/*
-	 * public String getnState() { return nState; }
-	 */
+	public static void setClientId(String clientId) {
+		Inmate.clientId = clientId;
+	}
 
-	/*
-	 * public void setnState(String nState) { this.nState = nState; }
-	 */
+	public String getnState() {
+		return nState;
+	}
+
+	public void setnState(String nState) {
+		Inmate.nState = nState;
+	}
 
 	@Override
 	public void connectionLost(Throwable arg0) {
@@ -93,7 +93,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		System.out.println("| Message: " + message.toString());
 		System.out.println("-------------------------------------------------");
 
-		//only used when QoS=1 or Qos=2
+		// only used when QoS=1 or Qos=2
 		try {
 			Socket socket = new Socket("127.0.0.1", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
@@ -105,6 +105,8 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		}
 
 		/*
+		 * function used while inmate is going to change the state
+		 * 
 		 * BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		 * System.out.print("Would you like to change the state? Write yes or no"); if
 		 * (reader.readLine().equals("yes")) { changeState(message); }
@@ -112,16 +114,17 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 	}
 
-	/*
-	 * public void changeState(MqttMessage message) {
-	 * System.out.println("Rozpoczeto proces zmian...");
-	 * 
-	 * if (message.toString().equals("on")) { setnState("off"); } else {
-	 * setnState("on"); }
-	 * 
-	 * 
-	 * //new Inmate().publish(getnState()); }
-	 */
+	public void changeState(MqttMessage message) {
+		System.out.println("Rozpoczeto proces zmian...");
+
+		if (message.toString().equals("on")) {
+			setnState("off");
+		} else {
+			setnState("on");
+		}
+
+		new Inmate(1).publish(getnState());
+	}
 
 	@Override
 	public void publish(String state) {
@@ -130,19 +133,19 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		try {
 			MqttClient client = new MqttClient(brokerUrl, getClientId(), persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
-			connOpts.setCleanSession(true);
+			connOpts.setCleanSession(true); // the broker doesn't store undelivered messages
 			System.out.println("Connecting to broker: " + brokerUrl);
 			client.connect(connOpts);
-			System.out.println("Connected to broker");
+			System.out.println("Connected successfully!");
 			System.out.println("Publishing message:" + state);
 			MqttMessage message = new MqttMessage(state.getBytes());
-			message.setQos(qos);
-			message.setRetained(true);
+			message.setQos(qos); // set the Quality of Sevice
+			message.setRetained(true); // the broker keeps the last published message on that topic
 			client.publish(getTopic(), message);
 			System.out.println("Message published");
-			client.disconnect();
-			client.close();
-			// System.exit(0);
+			
+			client.disconnect(); // disconnects from the server
+			client.close(); // close the client and releases all resources associated with client
 		} catch (MqttException me) {
 			System.out.println("reason " + me.getReasonCode());
 			System.out.println("msg " + me.getMessage());
