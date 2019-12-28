@@ -38,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openActivityPublish(){
-        Intent intent =  new Intent(this, ActivityConnectPub.class);
+        Intent intent =  new Intent(this, ActivityPublish.class);
         startActivity(intent);
     }
 
     public void openActivitySubscribe() {
-        Intent intent = new Intent(this, ActivityConnectSub.class);
+        Intent intent = new Intent(this, ActivitySubscribe.class);
         startActivity(intent);
     }
 }

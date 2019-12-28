@@ -25,7 +25,7 @@ public class ActivityConnectSub extends AppCompatActivity {
         setContentView(R.layout.activity_connect_sub);
         String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client =
-                new MqttAndroidClient(ActivityConnectSub.this, "tcp://broker.hivemq.com:1883",
+                new MqttAndroidClient(ActivityConnectSub.this, "tcp://localhost:1883",
                         clientId);
 
         b2 = (Button) findViewById(R.id.b2);

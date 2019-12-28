@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">MQTT</string>
-    <string name="would_you_like_to_publish_your_state">Would you like to publish your state?</string>
-</resources>

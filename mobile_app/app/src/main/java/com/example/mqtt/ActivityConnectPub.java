@@ -25,7 +25,7 @@ public class ActivityConnectPub extends AppCompatActivity {
         setContentView(R.layout.activity_connect_pub);
         String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client =
-                new MqttAndroidClient(ActivityConnectPub.this, "tcp://broker.hivemq.com:1883",
+                new MqttAndroidClient(ActivityConnectPub.this, "tcp://localhost:1883",
                         clientId);
 
         b1 = (Button) findViewById(R.id.b1);
