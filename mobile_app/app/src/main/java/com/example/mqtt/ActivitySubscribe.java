@@ -15,6 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.UnsupportedEncodingException;
 
@@ -26,10 +27,31 @@ public class ActivitySubscribe extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe);
+        MemoryPersistence memoryPersistence = new MemoryPersistence();
         String clientId = MqttClient.generateClientId();
         final MqttAndroidClient client =
                 new MqttAndroidClient(ActivitySubscribe.this,  "tcp://localhost:1883",
-                        clientId);
+                        clientId, memoryPersistence);
+
+        final IMqttToken connect;
+        try {
+            connect = client.connect();
+            connect.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Toast.makeText(ActivitySubscribe.this, "Ccnnected", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Toast.makeText(ActivitySubscribe.this, "Not connected", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+
         bSubscribe = (Button) findViewById(R.id.bSubscribe);
         bSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
