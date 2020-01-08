@@ -18,7 +18,7 @@ public class FactoryInmates {
 			inmate.subscribe(topic);
 			
 			//used when QoS=0
-			/*try {
+			try {
 				if (i == 1000) {
 					Socket socket = new Socket("127.0.0.1", 5000);
 					oos = new ObjectOutputStream(socket.getOutputStream());
@@ -28,7 +28,7 @@ public class FactoryInmates {
 
 			} catch (IOException e) {
 				e.printStackTrace();
-			}*/
+			}
 			
 			
 		}

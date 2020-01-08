@@ -36,7 +36,7 @@ public class Server {
 				
 				if (message.equalsIgnoreCase("hi server!")) {
 					count();
-					if (counter == 100) {
+					if (counter == 1000) {
 						stop = System.currentTimeMillis();
 						break;
 					}

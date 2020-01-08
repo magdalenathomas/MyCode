@@ -19,7 +19,7 @@ import abstracts.SubscriberAbstract;
 public class Lamp implements PublisherAbstract, SubscriberAbstract, MqttCallback {
 
 	private static final String brokerUrl = "tcp://localhost:1883";
-	private static int qos = 2;
+	private static int qos = 0;
 	protected static String state;
 	private static String clientId;
 	private static String topic;

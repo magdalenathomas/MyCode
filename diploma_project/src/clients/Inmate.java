@@ -20,7 +20,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	private static final String brokerUrl = "tcp://localhost:1883";
 	protected static String clientId;
 	protected static String topic;
-	private static int qos = 2;
+	private static int qos = 0;
 	protected static String nState;
 	public static ObjectOutputStream oos;
 
@@ -94,7 +94,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 		System.out.println("-------------------------------------------------");
 
 		// only used when QoS=1 or Qos=2
-		try {
+		/*try {
 			Socket socket = new Socket("127.0.0.1", 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.writeObject("hi server!");
@@ -102,7 +102,7 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		/*
 		 * function used while inmate is going to change the state
