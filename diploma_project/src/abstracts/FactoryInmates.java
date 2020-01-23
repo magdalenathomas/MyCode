@@ -13,7 +13,7 @@ public class FactoryInmates {
 
 	public static void main(String[] args) {
 
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= 1000; i++) {
 			Inmate inmate = new Inmate(i);
 			inmate.subscribe(topic);
 			
@@ -24,8 +24,7 @@ public class FactoryInmates {
 					oos = new ObjectOutputStream(socket.getOutputStream());
 					oos.writeObject("stop");
 					socket.close();
-				}
-
+				}				  
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

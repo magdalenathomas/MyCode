@@ -24,8 +24,13 @@ public class Inmate implements SubscriberAbstract, MqttCallback, PublisherAbstra
 	protected static String nState;
 	public static ObjectOutputStream oos;
 
+	public static void main(String[] args) {
+		Inmate inmate = new Inmate(5);
+		inmate.subscribe(topic);
+	}
+	
 	public Inmate(int number) {
-		setTopic("lamp");
+		setTopic("$SYS/#");
 		setClientId(MqttClient.generateClientId()); // randomly generated client identifier
 	}
 
