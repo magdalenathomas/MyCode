@@ -24,7 +24,7 @@ repositories {
     }
 }
 dependencies {
-    compile('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2') {
+    implementation ('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2') {
         exclude module: 'support-v4'
     }
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -33,4 +33,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
 }

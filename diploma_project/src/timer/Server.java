@@ -2,69 +2,68 @@ package timer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
 
-	private Socket socket; // socket do komunikacji z klientem
-	private ServerSocket server; // socket do nasluchiwania
-
+	private Socket socket; // socket for communication with client
+	private ServerSocket server; // listening socket
 	public static long start;
 	public static long stop;
-	public static long time;
+	public static int counter = 0;
 
 	public Server(int port) throws ClassNotFoundException {
 
 		try {
-			// tworzenie socketa do nasluchiwania
-			server = new ServerSocket(port);
+			server = new ServerSocket(port); // creating listening socket
 			System.out.println("Server started!");
-			for (int i = 0; i < 2; i++) {
+
+			while (true) {
 				System.out.println("Waiting for a client...");
 
-				// polaczenie z klientem
-				socket = server.accept();
+				socket = server.accept(); // connecting with client
 				System.out.println("Client accepted!");
 
-				// read from socket to ObjectInputStream object
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				// convert ObjectInputStream object to String
-				String message = (String) ois.readObject();
+				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream()); // read from socket to
+																						// ObjectInputStream object
+				String message = (String) ois.readObject(); // convert ObjectInputStream object to String
 				System.out.println("Message Received: " + message);
+
 				if (message.equalsIgnoreCase("start")) {
 					start = System.currentTimeMillis();
-					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-					oos.writeObject("Uruchamiam zegar " + start);
-					oos.close();
-				} else if (message.equalsIgnoreCase("stop")) {
-					stop = System.currentTimeMillis();
-					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-					oos.writeObject("Zatrzymuje zegar " + stop);
-					oos.close();
-				} else {
-					ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-					oos.writeObject("Nie rozpoznano komedy");
-					oos.close();
+				}
+				
+				if (message.equalsIgnoreCase("hi server!")) {
+					count();
+					if (counter == 1000) {
+						stop = System.currentTimeMillis();
+						break;
+					}
 				}
 
-				// close resources
-				ois.close();
-				socket.close();
-				// terminate the server if client sends exit request
-				if (message.equalsIgnoreCase("exit"))
+				if (message.equalsIgnoreCase("stop")) {
+					stop = System.currentTimeMillis();
 					break;
+				}
+
+				ois.close(); // closing ObjectInputStream
+				socket.close(); // closing socket for communication with client
 			}
+			server.close(); // closing listening socket
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
+	public int count() {
+		return counter++;
 	}
 
 	public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
-		Server server = new Server(5000);
+		new Server(5000);
 
-	System.out.println("Czas odpowiedzi wynosi: " + (stop - start) + " ms");
+		System.out.println("Response time: " + (stop - start) + " ms");
 	}
 }
